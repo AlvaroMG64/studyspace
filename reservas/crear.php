@@ -11,7 +11,7 @@ $mesas = $conn->query("SELECT * FROM mesas");
 
 <?php mensaje(); ?>
 
-<form action="guardar.php" method="POST" class="bg-white p-6 rounded shadow max-w-md">
+<form id="formReserva" action="guardar.php" method="POST" class="bg-white p-6 rounded shadow max-w-md">
 
 <label>Fecha</label>
 <input type="date" name="fecha" required class="w-full mb-3 p-2 border rounded" min="<?= date('Y-m-d') ?>">
@@ -26,7 +26,7 @@ $mesas = $conn->query("SELECT * FROM mesas");
 <select name="mesa" required class="w-full mb-4 p-2 border rounded">
 <?php while ($m = $mesas->fetch_assoc()) { ?>
 <option value="<?= $m['id_mesa'] ?>">
-Mesa <?= $m['numero'] ?>
+Mesa <?= htmlspecialchars($m['numero']) ?>
 </option>
 <?php } ?>
 </select>
@@ -38,17 +38,20 @@ Crear reserva
 </form>
 
 <script>
-document.querySelector("form").addEventListener("submit", function(e) {
+document.querySelector("#formReserva").addEventListener("submit", function(e) {
 
-let inicio = document.querySelector("[name=inicio]").value;
-let fin = document.querySelector("[name=fin]").value;
+    let inicio = document.querySelector("[name=inicio]").value;
+    let fin = document.querySelector("[name=fin]").value;
 
-if (inicio >= fin) {
-    alert("Hora incorrecta");
-    e.preventDefault();
-}
+    if (inicio >= fin) {
+        alert("Hora incorrecta");
+        e.preventDefault();
+    }
 
 });
 </script>
+
+<!-- 🔥 ESTO ES LO IMPORTANTE -->
+<script src="../resources/js/reservas.js"></script>
 
 <?php require_once "../includes/footer.php"; ?>
