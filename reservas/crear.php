@@ -51,7 +51,7 @@ document.querySelector("#formReserva").addEventListener("submit", function(e) {
 });
 </script>
 
-<!-- 🔥 ESTO ES LO IMPORTANTE -->
+<!-- ESTO ES LO IMPORTANTE -->
 <script src="../resources/js/reservas.js"></script>
 
 <?php require_once "../includes/footer.php"; ?>

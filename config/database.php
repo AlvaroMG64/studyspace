@@ -1,9 +1,9 @@
 <?php
 class Database {
 
-    private static $conn;
+    private static ?mysqli $conn = null;
 
-    public static function connect() {
+    public static function connect(): mysqli {
 
         if (!self::$conn) {
 
