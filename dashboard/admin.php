@@ -165,4 +165,7 @@ Reservas por día
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../resources/js/dashboard.js"></script>
+
 <?php require_once "../includes/footer.php"; ?>
