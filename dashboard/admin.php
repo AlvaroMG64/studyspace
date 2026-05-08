@@ -67,6 +67,44 @@ $result = $stmt->get_result();
 
 <?php mensaje(); ?>
 
+<!-- CARDS -->
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+
+<div class="bg-white p-6 rounded shadow text-center">
+<h3 class="text-gray-500">Reservas</h3>
+<p id="totalReservas" class="text-3xl font-bold">0</p>
+</div>
+
+<div class="bg-white p-6 rounded shadow text-center">
+<h3 class="text-gray-500">Usuarios</h3>
+<p id="totalUsuarios" class="text-3xl font-bold">0</p>
+</div>
+
+<div class="bg-white p-6 rounded shadow text-center">
+<h3 class="text-gray-500">Mesas</h3>
+<p id="totalMesas" class="text-3xl font-bold">0</p>
+</div>
+
+<div class="bg-white p-6 rounded shadow text-center">
+<h3 class="text-gray-500">Reservas hoy</h3>
+<p id="reservasHoy" class="text-3xl font-bold">0</p>
+</div>
+
+</div>
+
+<!-- GRÁFICA -->
+
+<div class="bg-white p-6 rounded shadow mb-6">
+
+<h3 class="text-xl font-bold mb-4">
+Reservas por día
+</h3>
+
+<canvas id="graficaReservas"></canvas>
+
+</div>
+
 <div class="flex justify-between items-center mb-4">
 
     <a href="../reservas/crear.php" 

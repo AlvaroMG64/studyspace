@@ -33,22 +33,40 @@ $result = $stmt->get_result();
 </tr>
 
 <?php while ($r = $result->fetch_assoc()) { ?>
-<tr class="border-t text-center">
+<tr id="fila-<?= $r['id_reserva'] ?>" class="border-t text-center">
 
 <td><?= htmlspecialchars($r['fecha_r']) ?></td>
-<td><?= htmlspecialchars($r['hora_inicio']) ?> - <?= htmlspecialchars($r['hora_fin']) ?></td>
+
+<td>
+<?= htmlspecialchars($r['hora_inicio']) ?>
+-
+<?= htmlspecialchars($r['hora_fin']) ?>
+</td>
+
 <td><?= htmlspecialchars($r['numero']) ?></td>
 
 <td>
-<a href="editar.php?id=<?= $r['id_reserva'] ?>" class="text-blue-500">Editar</a> |
-<a href="eliminar.php?id=<?= $r['id_reserva'] ?>" 
-onclick="return confirm('¿Eliminar?')" 
-class="text-red-500">Eliminar</a>
+
+<a href="editar.php?id=<?= $r['id_reserva'] ?>"
+class="text-blue-500">
+Editar
+</a>
+
+|
+
+<a href="#"
+class="text-red-500 btnEliminar"
+data-id="<?= $r['id_reserva'] ?>">
+Eliminar
+</a>
+
 </td>
 
 </tr>
 <?php } ?>
 
 </table>
+
+<script src="../resources/js/reservas.js"></script>
 
 <?php require_once "../includes/footer.php"; ?>

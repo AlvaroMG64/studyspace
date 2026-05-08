@@ -11,7 +11,8 @@ $mesas = $conn->query("SELECT * FROM mesas");
 
 <?php mensaje(); ?>
 
-<form id="formReserva" action="guardar.php" method="POST" class="bg-white p-6 rounded shadow max-w-md">
+<!-- IMPORTANTE: quitamos action -->
+<form id="formReserva" class="bg-white p-6 rounded shadow max-w-md">
 
 <label>Fecha</label>
 <input type="date" name="fecha" required class="w-full mb-3 p-2 border rounded" min="<?= date('Y-m-d') ?>">
@@ -37,21 +38,10 @@ Crear reserva
 
 </form>
 
-<script>
-document.querySelector("#formReserva").addEventListener("submit", function(e) {
+<!-- MENSAJE DINÁMICO -->
+<div id="mensajeAjax" class="mt-4"></div>
 
-    let inicio = document.querySelector("[name=inicio]").value;
-    let fin = document.querySelector("[name=fin]").value;
-
-    if (inicio >= fin) {
-        alert("Hora incorrecta");
-        e.preventDefault();
-    }
-
-});
-</script>
-
-<!-- ESTO ES LO IMPORTANTE -->
+<!-- JS -->
 <script src="../resources/js/reservas.js"></script>
 
 <?php require_once "../includes/footer.php"; ?>
