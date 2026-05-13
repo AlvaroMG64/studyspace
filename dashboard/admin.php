@@ -1,8 +1,10 @@
 <?php
 require_once "../includes/auth.php";
 require_once "../includes/header.php";
-require_once "../config/db.php";
+require_once "../config/database.php";
 require_once "../includes/helpers.php";
+
+$conn = Database::connect();
 
 if (!esAdmin()) {
     header("Location: ../index.php");

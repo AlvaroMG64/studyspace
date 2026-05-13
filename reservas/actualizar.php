@@ -1,6 +1,8 @@
 <?php
 require_once "../includes/auth.php";
-require_once "../config/db.php";
+require_once "../config/database.php";
+
+$conn = Database::connect();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: mis_reservas.php");

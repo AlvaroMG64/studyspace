@@ -1,6 +1,8 @@
 <?php
 require_once "../includes/auth.php";
-require_once "../config/db.php";
+require_once "../config/database.php";
+
+$conn = Database::connect();
 
 if (!isset($_GET['id'])) {
     header("Location: mis_reservas.php");
