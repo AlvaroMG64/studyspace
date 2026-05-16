@@ -7,6 +7,7 @@ class Database {
 
         if (!self::$conn) {
 
+            // Puerto 3307 usado en entorno local XAMPP
             self::$conn = new mysqli(
                 "127.0.0.1",
                 "root",
