@@ -13,9 +13,10 @@ $id = intval($_POST['id']);
 $fecha = $_POST['fecha'];
 $inicio = $_POST['inicio'];
 $fin = $_POST['fin'];
+$mesa = intval($_POST['mesa']);
 $usuario = $_SESSION['id'];
 
-if (!$fecha || !$inicio || !$fin) {
+if (!$fecha || !$inicio || !$fin || !$mesa) {
     $_SESSION['error'] = "Datos incompletos";
     header("Location: editar.php?id=$id");
     exit;
@@ -33,49 +34,104 @@ if ($fecha < date("Y-m-d")) {
     exit;
 }
 
-// Obtener reserva
-$stmt = $conn->prepare("SELECT * FROM reservas WHERE id_reserva = ?");
+// OBTENER RESERVA
+$stmt = $conn->prepare("
+SELECT *
+FROM reservas
+WHERE id_reserva = ?
+");
+
 $stmt->bind_param("i", $id);
 $stmt->execute();
 
 $reserva = $stmt->get_result()->fetch_assoc();
 
 if (!$reserva) {
-    die("No existe");
+    die("Reserva no encontrada");
 }
 
 if ($reserva['id_usuario'] != $usuario && !esAdmin()) {
     die("No autorizado");
 }
 
-// Evitar solapamientos
+// VALIDAR SOLAPAMIENTO DE MESA
 $stmt = $conn->prepare("
-SELECT id_reserva FROM reservas
+SELECT id_reserva
+FROM reservas
 WHERE id_mesa = ?
 AND fecha_r = ?
 AND id_reserva != ?
 AND NOT (hora_fin <= ? OR hora_inicio >= ?)
 ");
 
-$stmt->bind_param("isiss", $reserva['id_mesa'], $fecha, $id, $inicio, $fin);
+$stmt->bind_param(
+    "isiss",
+    $mesa,
+    $fecha,
+    $id,
+    $inicio,
+    $fin
+);
+
 $stmt->execute();
 
 if ($stmt->get_result()->num_rows > 0) {
-    $_SESSION['error'] = "Horario ocupado";
+
+    $_SESSION['error'] = "La mesa ya está ocupada";
     header("Location: editar.php?id=$id");
     exit;
 }
 
-// Update
+// VALIDAR SOLAPAMIENTO DE USUARIO
 $stmt = $conn->prepare("
-UPDATE reservas 
-SET fecha_r=?, hora_inicio=?, hora_fin=? 
-WHERE id_reserva=?
+SELECT id_reserva
+FROM reservas
+WHERE id_usuario = ?
+AND fecha_r = ?
+AND id_reserva != ?
+AND NOT (hora_fin <= ? OR hora_inicio >= ?)
 ");
 
-$stmt->bind_param("sssi", $fecha, $inicio, $fin, $id);
+$stmt->bind_param(
+    "isis",
+    $usuario,
+    $fecha,
+    $id,
+    $inicio,
+    $fin
+);
+
 $stmt->execute();
 
-$_SESSION['success'] = "Reserva actualizada";
+if ($stmt->get_result()->num_rows > 0) {
+
+    $_SESSION['error'] = "Ya tienes otra reserva en ese horario";
+    header("Location: editar.php?id=$id");
+    exit;
+}
+
+// ACTUALIZAR
+$stmt = $conn->prepare("
+UPDATE reservas
+SET fecha_r = ?,
+hora_inicio = ?,
+hora_fin = ?,
+id_mesa = ?
+WHERE id_reserva = ?
+");
+
+$stmt->bind_param(
+    "sssii",
+    $fecha,
+    $inicio,
+    $fin,
+    $mesa,
+    $id
+);
+
+$stmt->execute();
+
+$_SESSION['success'] = "Reserva actualizada correctamente";
+
 header("Location: mis_reservas.php");
 exit;
