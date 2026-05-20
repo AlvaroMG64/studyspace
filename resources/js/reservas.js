@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
 
             let response = await fetch(
-                "../api/reservas.php",
+                "/studyspace/public/guardar-reserva",
                 {
                     method: "POST",
                     body: formData

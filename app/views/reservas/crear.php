@@ -121,6 +121,6 @@ Crear reserva
 
 <div id="mensajeAjax" class="mt-4"></div>
 
-<script src="../resources/js/reservas.js"></script>
+<script src="/studyspace/resources/js/reservas.js"></script>
 
 <?php require_once "../includes/footer.php"; ?>

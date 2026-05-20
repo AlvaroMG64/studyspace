@@ -49,7 +49,7 @@ $result = $stmt->get_result();
 
 <td>
 
-<a href="editar.php?id=<?= $r['id_reserva'] ?>"
+<a href="/studyspace/public/editar-reserva?id=<?= $r['id_reserva'] ?>"
 class="text-blue-500">
 Editar
 </a>
@@ -69,6 +69,6 @@ Eliminar
 
 </table>
 
-<script src="../resources/js/reservas.js"></script>
+<script src="/studyspace/resources/js/reservas.js"></script>
 
 <?php require_once "../includes/footer.php"; ?>
