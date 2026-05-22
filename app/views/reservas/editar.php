@@ -1,89 +1,78 @@
-<?php
-require_once "../includes/auth.php";
-require_once "../config/database.php";
-require_once "../includes/header.php";
+// app/views/reservas/editar.php
 
-$conn = Database::connect();
-
-if (!isset($_GET['id'])) {
-    header("Location: mis_reservas.php");
-    exit;
-}
-
-$id = intval($_GET['id']);
-$usuario = $_SESSION['id'];
-
-$stmt = $conn->prepare("
-SELECT r.*, 
-       m.id_mesa,
-       m.numero,
-       s.id_sala,
-       b.id_biblioteca
-FROM reservas r
-JOIN mesas m ON r.id_mesa = m.id_mesa
-JOIN salas s ON m.id_sala = s.id_sala
-JOIN bibliotecas b ON s.id_biblioteca = b.id_biblioteca
-WHERE r.id_reserva = ?
-");
-
-$stmt->bind_param("i", $id);
-$stmt->execute();
-
-$reserva = $stmt->get_result()->fetch_assoc();
-
-if (!$reserva) {
-    die("Reserva no encontrada");
-}
-
-if ($reserva['id_usuario'] != $usuario && !esAdmin()) {
-    die("No autorizado");
-}
-?>
+<?php require_once "../app/views/layouts/header.php"; ?>
 
 <h2 class="text-3xl font-bold mb-6">
 Editar Reserva
 </h2>
 
-<form id="formEditar"
-      class="bg-white p-6 rounded-2xl shadow-lg max-w-lg"
-      novalidate>
+<form
+id="formEditar"
+class="bg-white p-6 rounded-2xl shadow-lg max-w-lg"
+novalidate
+>
 
-<input type="hidden"
-       name="id"
-       value="<?= $id ?>">
+<input
+type="hidden"
+name="id"
+value="<?= $reserva['id_reserva'] ?>"
+>
+
+<input
+type="hidden"
+name="mesa"
+value="<?= $reserva['id_mesa'] ?>"
+>
 
 <label class="font-semibold">
 Fecha
 </label>
 
-<input type="date"
-       name="fecha"
-       value="<?= $reserva['fecha_r'] ?>"
-       class="w-full p-3 border rounded-xl mb-4">
+<input
+type="date"
+name="fecha"
+value="<?= $reserva['fecha_r'] ?>"
+class="w-full p-3 border rounded-xl mb-4"
+>
 
 <label class="font-semibold">
 Hora inicio
 </label>
 
-<input type="time"
-       name="inicio"
-       value="<?= $reserva['hora_inicio'] ?>"
-       class="w-full p-3 border rounded-xl mb-4">
+<input
+type="time"
+name="inicio"
+value="<?= $reserva['hora_inicio'] ?>"
+class="w-full p-3 border rounded-xl mb-4"
+>
 
 <label class="font-semibold">
 Hora fin
 </label>
 
-<input type="time"
-       name="fin"
-       value="<?= $reserva['hora_fin'] ?>"
-       class="w-full p-3 border rounded-xl mb-6">
+<input
+type="time"
+name="fin"
+value="<?= $reserva['hora_fin'] ?>"
+class="w-full p-3 border rounded-xl mb-6"
+>
 
 <button
-class="w-full py-3 rounded-xl text-white font-bold
-bg-gradient-to-r from-blue-500 to-indigo-600
+class="
+w-full
+py-3
+rounded-xl
+text-white
+font-bold
+bg-gradient-to-r
+from-blue-500
+to-indigo-600
 hover:scale-[1.02]
-transition-all duration-200 shadow-lg">
+transition-all
+duration-200
+shadow-lg
+"
+>
 
 Guardar cambios
 
@@ -100,9 +89,7 @@ document.getElementById("formEditar")
 
     e.preventDefault();
 
-    let form = e.target;
-
-    let formData = new FormData(form);
+    let formData = new FormData(e.target);
 
     let fecha = formData.get("fecha");
     let inicio = formData.get("inicio");
@@ -151,7 +138,7 @@ document.getElementById("formEditar")
     try {
 
         let response = await fetch(
-            "actualizar.php",
+            "/studyspace/public/actualizar-reserva",
             {
                 method: "POST",
                 body: formData
@@ -163,7 +150,7 @@ document.getElementById("formEditar")
         if (data.success) {
 
             window.location.href =
-                "mis_reservas.php";
+                "/studyspace/public/mis-reservas";
 
         } else {
 
@@ -190,9 +177,11 @@ function mostrarMensaje(texto, tipo) {
     div.innerHTML = `
         <div class="
             p-4 rounded-xl border mt-4
-            ${tipo === "success"
+            ${
+                tipo === "success"
                 ? "bg-green-100 text-green-700 border-green-400"
-                : "bg-red-100 text-red-700 border-red-400"}
+                : "bg-red-100 text-red-700 border-red-400"
+            }
         ">
             ${texto}
         </div>
@@ -201,4 +190,4 @@ function mostrarMensaje(texto, tipo) {
 
 </script>
 
-<?php require_once "../includes/footer.php"; ?>
+<?php require_once "../app/views/layouts/footer.php"; ?>

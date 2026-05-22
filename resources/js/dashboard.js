@@ -2,29 +2,91 @@ async function cargarDashboard() {
 
     try {
 
-        let response = await fetch("../api/stats.php");
-        let data = await response.json();
+        const response = await fetch(
+            "/studyspace/public/api/stats"
+        );
 
-        // CARDS
-        document.getElementById("totalReservas").innerText = data.totalReservas;
-        document.getElementById("totalUsuarios").innerText = data.totalUsuarios;
-        document.getElementById("totalMesas").innerText = data.totalMesas;
-        document.getElementById("reservasHoy").innerText = data.reservasHoy;
+        if (!response.ok) {
+            throw new Error(
+                "Error cargando estadísticas"
+            );
+        }
 
-        // GRÁFICA
-        let labels = data.grafica.map(item => item.fecha_r);
-        let valores = data.grafica.map(item => item.total);
+        const data = await response.json();
 
-        let ctx = document.getElementById("graficaReservas");
+        const totalReservas =
+            document.getElementById(
+                "totalReservas"
+            );
+
+        const totalUsuarios =
+            document.getElementById(
+                "totalUsuarios"
+            );
+
+        const totalMesas =
+            document.getElementById(
+                "totalMesas"
+            );
+
+        const reservasHoy =
+            document.getElementById(
+                "reservasHoy"
+            );
+
+        if (
+            totalReservas &&
+            totalUsuarios &&
+            totalMesas &&
+            reservasHoy
+        ) {
+
+            totalReservas.innerText =
+                data.totalReservas;
+
+            totalUsuarios.innerText =
+                data.totalUsuarios;
+
+            totalMesas.innerText =
+                data.totalMesas;
+
+            reservasHoy.innerText =
+                data.reservasHoy;
+        }
+
+        const ctx =
+            document.getElementById(
+                "graficaReservas"
+            );
+
+        if (!ctx) {
+            return;
+        }
+
+        const labels =
+            data.grafica.map(
+                item => item.fecha_r
+            );
+
+        const valores =
+            data.grafica.map(
+                item => item.total
+            );
 
         new Chart(ctx, {
+
             type: "bar",
+
             data: {
+
                 labels: labels,
-                datasets: [{
-                    label: "Reservas",
-                    data: valores
-                }]
+
+                datasets: [
+                    {
+                        label: "Reservas",
+                        data: valores
+                    }
+                ]
             }
         });
 
@@ -34,4 +96,7 @@ async function cargarDashboard() {
     }
 }
 
-cargarDashboard();
+document.addEventListener(
+    "DOMContentLoaded",
+    cargarDashboard
+);

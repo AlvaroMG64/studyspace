@@ -4,7 +4,9 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>StudySpace</title>
 
@@ -12,48 +14,50 @@
 
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-100">
 
 <nav class="bg-blue-700 text-white p-4 shadow">
 
-    <div class="container mx-auto flex justify-between items-center">
+<div class="container mx-auto flex justify-between">
 
-        <a href="/studyspace/public/" class="font-bold text-xl">
-            StudySpace
-        </a>
+<div class="font-bold text-xl">
+StudySpace
+</div>
 
-        <div class="space-x-4">
+<div class="space-x-4">
 
-            <?php if (isset($_SESSION['id'])): ?>
+<a href="/studyspace/public/"
+class="hover:underline">
 
-                <a href="/studyspace/public/mis-reservas" class="hover:underline">
-                    Mis reservas
-                </a>
+Inicio
 
-                <a href="/studyspace/public/crear-reserva" class="hover:underline">
-                    Crear reserva
-                </a>
+</a>
 
-                <a href="/studyspace/public/logout" class="hover:underline">
-                    Cerrar sesión
-                </a>
+<a href="/studyspace/public/mis-reservas"
+class="hover:underline">
 
-            <?php else: ?>
+Mis reservas
 
-                <a href="/studyspace/public/login" class="hover:underline">
-                    Login
-                </a>
+</a>
 
-                <a href="/studyspace/public/registro" class="hover:underline">
-                    Registro
-                </a>
+<a href="/studyspace/public/crear-reserva"
+class="hover:underline">
 
-            <?php endif; ?>
+Crear reserva
 
-        </div>
+</a>
 
-    </div>
+<a href="/studyspace/public/logout"
+class="hover:underline">
+
+Cerrar sesión
+
+</a>
+
+</div>
+
+</div>
 
 </nav>
 
-<main class="container mx-auto py-8">
+<main class="container mx-auto p-6">

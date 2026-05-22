@@ -46,9 +46,20 @@ class Reserva {
     public function obtenerPorId($id) {
 
         $stmt = $this->conn->prepare("
-        SELECT *
-        FROM reservas
-        WHERE id_reserva = ?
+        SELECT
+            r.*,
+            m.numero,
+            m.id_mesa,
+            s.nombre_s,
+            b.nombre_b
+        FROM reservas r
+        JOIN mesas m
+            ON r.id_mesa = m.id_mesa
+        JOIN salas s
+            ON m.id_sala = s.id_sala
+        JOIN bibliotecas b
+            ON s.id_biblioteca = b.id_biblioteca
+        WHERE r.id_reserva = ?
         ");
 
         $stmt->bind_param(
@@ -164,6 +175,7 @@ class Reserva {
         ";
 
         if ($ignorar) {
+
             $sql .= "
             AND id_reserva != ?
             ";
@@ -221,6 +233,7 @@ class Reserva {
         ";
 
         if ($ignorar) {
+
             $sql .= "
             AND id_reserva != ?
             ";

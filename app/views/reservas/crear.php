@@ -1,17 +1,6 @@
-<?php
-require_once "../includes/auth.php";
-require_once "../includes/header.php";
-require_once "../config/database.php";
-require_once "../includes/helpers.php";
+<?php require_once "../app/views/layouts/header.php"; ?>
 
-$conn = Database::connect();
-
-$bibliotecas = $conn->query("
-SELECT *
-FROM bibliotecas
-ORDER BY nombre_b ASC
-");
-?>
+<?php require_once "../includes/helpers.php"; ?>
 
 <h2 class="text-3xl font-bold mb-6">
 Crear Reserva
@@ -19,14 +8,19 @@ Crear Reserva
 
 <?php mensaje(); ?>
 
-<form id="formReserva" class="bg-white p-6 rounded-2xl shadow-lg max-w-xl">
+<form
+id="formReserva"
+class="bg-white p-6 rounded-2xl shadow-lg max-w-xl"
+>
 
-<label class="font-semibold">Biblioteca</label>
+<label class="font-semibold">
+Biblioteca
+</label>
 
 <select
-    id="biblioteca"
-    required
-    class="w-full mb-4 p-3 border rounded-xl"
+id="biblioteca"
+required
+class="w-full mb-4 p-3 border rounded-xl"
 >
 
 <option value="">
@@ -36,19 +30,23 @@ Seleccionar biblioteca
 <?php while ($b = $bibliotecas->fetch_assoc()) { ?>
 
 <option value="<?= $b['id_biblioteca'] ?>">
+
 <?= htmlspecialchars($b['nombre_b']) ?>
+
 </option>
 
 <?php } ?>
 
 </select>
 
-<label class="font-semibold">Sala</label>
+<label class="font-semibold">
+Sala
+</label>
 
 <select
-    id="sala"
-    required
-    class="w-full mb-4 p-3 border rounded-xl"
+id="sala"
+required
+class="w-full mb-4 p-3 border rounded-xl"
 >
 
 <option value="">
@@ -57,13 +55,15 @@ Seleccionar sala
 
 </select>
 
-<label class="font-semibold">Mesa</label>
+<label class="font-semibold">
+Mesa
+</label>
 
 <select
-    name="mesa"
-    id="mesa"
-    required
-    class="w-full mb-4 p-3 border rounded-xl"
+name="mesa"
+id="mesa"
+required
+class="w-full mb-4 p-3 border rounded-xl"
 >
 
 <option value="">
@@ -72,49 +72,57 @@ Seleccionar mesa
 
 </select>
 
-<label class="font-semibold">Fecha</label>
+<label class="font-semibold">
+Fecha
+</label>
 
 <input
-    type="date"
-    name="fecha"
-    required
-    min="<?= date('Y-m-d') ?>"
-    class="w-full mb-4 p-3 border rounded-xl"
+type="date"
+name="fecha"
+required
+min="<?= date('Y-m-d') ?>"
+class="w-full mb-4 p-3 border rounded-xl"
 >
 
-<label class="font-semibold">Hora inicio</label>
+<label class="font-semibold">
+Hora inicio
+</label>
 
 <input
-    type="time"
-    name="inicio"
-    required
-    class="w-full mb-4 p-3 border rounded-xl"
+type="time"
+name="inicio"
+required
+class="w-full mb-4 p-3 border rounded-xl"
 >
 
-<label class="font-semibold">Hora fin</label>
+<label class="font-semibold">
+Hora fin
+</label>
 
 <input
-    type="time"
-    name="fin"
-    required
-    class="w-full mb-6 p-3 border rounded-xl"
+type="time"
+name="fin"
+required
+class="w-full mb-6 p-3 border rounded-xl"
 >
 
 <button
-    class="
-    w-full
-    bg-gradient-to-r
-    from-blue-500
-    to-blue-700
-    text-white
-    py-3
-    rounded-xl
-    hover:scale-105
-    transition
-    shadow-lg
-    "
+class="
+w-full
+bg-gradient-to-r
+from-blue-500
+to-blue-700
+text-white
+py-3
+rounded-xl
+hover:scale-105
+transition
+shadow-lg
+"
 >
+
 Crear reserva
+
 </button>
 
 </form>
@@ -123,4 +131,4 @@ Crear reserva
 
 <script src="/studyspace/resources/js/reservas.js"></script>
 
-<?php require_once "../includes/footer.php"; ?>
+<?php require_once "../app/views/layouts/footer.php"; ?>

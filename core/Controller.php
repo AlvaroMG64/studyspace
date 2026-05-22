@@ -1,15 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 class Controller {
 
-    protected function view($view, $data = []) {
+    protected function view(
+        string $view,
+        array $data = []
+    ): void {
 
         extract($data);
 
-        require_once "../app/views/$view.php";
+        require_once __DIR__ .
+            "/../app/views/$view.php";
     }
 
-    protected function redirect($url) {
+    protected function redirect(
+        string $url
+    ): void {
 
         header("Location: $url");
 

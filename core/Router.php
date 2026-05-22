@@ -1,25 +1,39 @@
 <?php
 
+declare(strict_types=1);
+
 class Router {
 
     private array $routes = [];
 
-    public function get($uri, $action) {
+    public function get(
+        string $uri,
+        string $action
+    ): void {
 
-        $this->routes['GET'][$this->format($uri)] = $action;
+        $this->routes['GET'][
+            $this->format($uri)
+        ] = $action;
     }
 
-    public function post($uri, $action) {
+    public function post(
+        string $uri,
+        string $action
+    ): void {
 
-        $this->routes['POST'][$this->format($uri)] = $action;
+        $this->routes['POST'][
+            $this->format($uri)
+        ] = $action;
     }
 
-    private function format($uri): string {
+    private function format(
+        string $uri
+    ): string {
 
         return trim($uri, '/');
     }
 
-    public function dispatch() {
+    public function dispatch(): void {
 
         $method = $_SERVER['REQUEST_METHOD'];
 
@@ -28,7 +42,6 @@ class Router {
             PHP_URL_PATH
         );
 
-        // Quitar carpeta public
         $uri = str_replace(
             '/studyspace/public',
             '',
@@ -37,21 +50,59 @@ class Router {
 
         $uri = $this->format($uri);
 
-        $action = $this->routes[$method][$uri] ?? null;
+        $action =
+            $this->routes[$method][$uri]
+            ?? null;
 
-        if (!$action) {
+        if ($action === null) {
 
             http_response_code(404);
 
             die("404 - Página no encontrada");
         }
 
-        [$controller, $function] = explode('@', $action);
+        [
+            $controller,
+            $function
+        ] = explode('@', $action);
 
-        require_once "../app/controllers/$controller.php";
+        $controllerPath =
+            __DIR__ .
+            "/../app/controllers/$controller.php";
 
-        $controller = new $controller();
+        if (!file_exists($controllerPath)) {
 
-        call_user_func([$controller, $function]);
+            http_response_code(500);
+
+            die("Controlador no encontrado");
+        }
+
+        require_once $controllerPath;
+
+        if (!class_exists($controller)) {
+
+            http_response_code(500);
+
+            die("Clase controlador inválida");
+        }
+
+        $controllerInstance =
+            new $controller();
+
+        if (
+            !method_exists(
+                $controllerInstance,
+                $function
+            )
+        ) {
+
+            http_response_code(500);
+
+            die("Método no encontrado");
+        }
+
+        call_user_func(
+            [$controllerInstance, $function]
+        );
     }
 }
