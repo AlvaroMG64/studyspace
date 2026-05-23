@@ -1,107 +1,116 @@
-<?php require_once "../app/views/layouts/header.php"; ?>
+<?php
 
-<?php require_once "../includes/helpers.php"; ?>
+declare(strict_types=1);
 
-<h2 class="text-2xl font-bold mb-4">
-Mis Reservas
+/** @var mysqli_result $reservas */
+
+require_once __DIR__ . "/../layouts/header.php";
+
+?>
+
+<h2 class="text-3xl font-bold mb-6">
+    Mis Reservas
 </h2>
 
-<?php mensaje(); ?>
+<table class="w-full bg-white shadow rounded-xl overflow-hidden">
 
-<table class="w-full bg-white shadow rounded">
+    <thead class="bg-gray-200">
 
-<tr class="bg-gray-200">
+        <tr>
 
-<th class="p-2">
-Fecha
-</th>
+            <th class="p-3 text-left">
+                Fecha
+            </th>
 
-<th class="p-2">
-Hora
-</th>
+            <th class="p-3 text-left">
+                Horario
+            </th>
 
-<th class="p-2">
-Mesa
-</th>
+            <th class="p-3 text-left">
+                Mesa
+            </th>
 
-<th class="p-2">
-Biblioteca
-</th>
+            <th class="p-3 text-left">
+                Sala
+            </th>
 
-<th class="p-2">
-Sala
-</th>
+            <th class="p-3 text-left">
+                Biblioteca
+            </th>
 
-<th class="p-2">
-Acciones
-</th>
+            <th class="p-3 text-left">
+                Acciones
+            </th>
 
-</tr>
+        </tr>
 
-<?php while ($r = $reservas->fetch_assoc()) { ?>
+    </thead>
 
-<tr
-id="fila-<?= $r['id_reserva'] ?>"
-class="border-t text-center"
->
+    <tbody>
 
-<td>
-<?= htmlspecialchars($r['fecha_r']) ?>
-</td>
+        <?php while ($r = $reservas->fetch_assoc()) : ?>
 
-<td>
+            <tr
+                id="fila-<?= $r['id_reserva'] ?>"
+                class="border-t"
+            >
 
-<?= htmlspecialchars($r['hora_inicio']) ?>
+                <td class="p-3">
+                    <?= htmlspecialchars($r['fecha_r']) ?>
+                </td>
 
--
+                <td class="p-3">
 
-<?= htmlspecialchars($r['hora_fin']) ?>
+                    <?= htmlspecialchars($r['hora_inicio']) ?>
 
-</td>
+                    -
 
-<td>
-<?= htmlspecialchars($r['numero']) ?>
-</td>
+                    <?= htmlspecialchars($r['hora_fin']) ?>
 
-<td>
-<?= htmlspecialchars($r['nombre_b']) ?>
-</td>
+                </td>
 
-<td>
-<?= htmlspecialchars($r['nombre_s']) ?>
-</td>
+                <td class="p-3">
+                    Mesa <?= htmlspecialchars($r['numero']) ?>
+                </td>
 
-<td>
+                <td class="p-3">
+                    <?= htmlspecialchars($r['nombre_s']) ?>
+                </td>
 
-<a
-href="/studyspace/public/editar-reserva?id=<?= $r['id_reserva'] ?>"
-class="text-blue-500"
->
+                <td class="p-3">
+                    <?= htmlspecialchars($r['nombre_b']) ?>
+                </td>
 
-Editar
+                <td class="p-3 flex gap-4">
 
-</a>
+                    <a
+                        href="/studyspace/public/editar-reserva?id=<?= $r['id_reserva'] ?>"
+                        class="text-blue-600 hover:underline"
+                    >
+                        Editar
+                    </a>
 
-|
+                    <button
+                        class="text-red-600 btnEliminar"
+                        data-id="<?= $r['id_reserva'] ?>"
+                    >
+                        Eliminar
+                    </button>
 
-<a
-href="#"
-class="text-red-500 btnEliminar"
-data-id="<?= $r['id_reserva'] ?>"
->
+                </td>
 
-Eliminar
+            </tr>
 
-</a>
+        <?php endwhile; ?>
 
-</td>
-
-</tr>
-
-<?php } ?>
+    </tbody>
 
 </table>
 
+<div id="mensajeAjax" class="mt-4"></div>
+
 <script src="/studyspace/resources/js/reservas.js"></script>
 
-<?php require_once "../app/views/layouts/footer.php"; ?>
+<?php
+
+require_once __DIR__ . "/../layouts/footer.php";

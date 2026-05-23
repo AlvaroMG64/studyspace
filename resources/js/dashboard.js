@@ -6,72 +6,35 @@ async function cargarDashboard() {
             "/studyspace/public/api/stats"
         );
 
-        if (!response.ok) {
-            throw new Error(
-                "Error cargando estadísticas"
-            );
-        }
-
         const data = await response.json();
 
-        const totalReservas =
-            document.getElementById(
-                "totalReservas"
-            );
+        document.getElementById(
+            "totalReservas"
+        ).innerText = data.totalReservas;
 
-        const totalUsuarios =
-            document.getElementById(
-                "totalUsuarios"
-            );
+        document.getElementById(
+            "totalUsuarios"
+        ).innerText = data.totalUsuarios;
 
-        const totalMesas =
-            document.getElementById(
-                "totalMesas"
-            );
+        document.getElementById(
+            "totalMesas"
+        ).innerText = data.totalMesas;
 
-        const reservasHoy =
-            document.getElementById(
-                "reservasHoy"
-            );
+        document.getElementById(
+            "reservasHoy"
+        ).innerText = data.reservasHoy;
 
-        if (
-            totalReservas &&
-            totalUsuarios &&
-            totalMesas &&
-            reservasHoy
-        ) {
+        const labels = data.grafica.map(
+            item => item.fecha_r
+        );
 
-            totalReservas.innerText =
-                data.totalReservas;
+        const valores = data.grafica.map(
+            item => item.total
+        );
 
-            totalUsuarios.innerText =
-                data.totalUsuarios;
-
-            totalMesas.innerText =
-                data.totalMesas;
-
-            reservasHoy.innerText =
-                data.reservasHoy;
-        }
-
-        const ctx =
-            document.getElementById(
-                "graficaReservas"
-            );
-
-        if (!ctx) {
-            return;
-        }
-
-        const labels =
-            data.grafica.map(
-                item => item.fecha_r
-            );
-
-        const valores =
-            data.grafica.map(
-                item => item.total
-            );
+        const ctx = document.getElementById(
+            "graficaReservas"
+        );
 
         new Chart(ctx, {
 
@@ -81,12 +44,10 @@ async function cargarDashboard() {
 
                 labels: labels,
 
-                datasets: [
-                    {
-                        label: "Reservas",
-                        data: valores
-                    }
-                ]
+                datasets: [{
+                    label: "Reservas",
+                    data: valores
+                }]
             }
         });
 
@@ -96,7 +57,4 @@ async function cargarDashboard() {
     }
 }
 
-document.addEventListener(
-    "DOMContentLoaded",
-    cargarDashboard
-);
+cargarDashboard();

@@ -1,146 +1,101 @@
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+document.addEventListener("DOMContentLoaded", () => {
 
-        const biblioteca =
-            document.getElementById(
-                "biblioteca"
-            );
+    const biblioteca =
+        document.getElementById("biblioteca");
 
-        const sala =
-            document.getElementById(
-                "sala"
-            );
+    const sala =
+        document.getElementById("sala");
 
-        const mesa =
-            document.getElementById(
-                "mesa"
-            );
+    const mesa =
+        document.getElementById("mesa");
 
-        // CARGAR SALAS
+    // CARGAR SALAS
+    if (biblioteca) {
 
-        if (biblioteca) {
+        biblioteca.addEventListener(
+            "change",
+            async () => {
 
-            biblioteca.addEventListener(
-                "change",
-                async () => {
+                sala.innerHTML = `
+                    <option value="">
+                        Cargando salas...
+                    </option>
+                `;
 
-                    sala.innerHTML = `
-                        <option value="">
-                            Cargando salas...
+                mesa.innerHTML = `
+                    <option value="">
+                        Seleccionar mesa
+                    </option>
+                `;
+
+                const response = await fetch(
+                    `/studyspace/public/api/salas?biblioteca=${biblioteca.value}`
+                );
+
+                const data =
+                    await response.json();
+
+                sala.innerHTML = `
+                    <option value="">
+                        Seleccionar sala
+                    </option>
+                `;
+
+                data.forEach(item => {
+
+                    sala.innerHTML += `
+                        <option value="${item.id_sala}">
+                            ${item.nombre_s}
                         </option>
                     `;
+                });
+            }
+        );
+    }
 
-                    mesa.innerHTML = `
-                        <option value="">
-                            Seleccionar mesa
+    // CARGAR MESAS
+    if (sala) {
+
+        sala.addEventListener(
+            "change",
+            async () => {
+
+                mesa.innerHTML = `
+                    <option value="">
+                        Cargando mesas...
+                    </option>
+                `;
+
+                const response = await fetch(
+                    `/studyspace/public/api/mesas?sala=${sala.value}`
+                );
+
+                const data =
+                    await response.json();
+
+                mesa.innerHTML = `
+                    <option value="">
+                        Seleccionar mesa
+                    </option>
+                `;
+
+                data.forEach(item => {
+
+                    mesa.innerHTML += `
+                        <option value="${item.id_mesa}">
+                            Mesa ${item.numero}
                         </option>
                     `;
+                });
+            }
+        );
+    }
 
-                    try {
+    // FORM CREAR RESERVA
+    const form =
+        document.getElementById("formReserva");
 
-                        const response =
-                            await fetch(
-                                `/studyspace/public/api/salas?biblioteca=${biblioteca.value}`
-                            );
-
-                        if (!response.ok) {
-                            throw new Error();
-                        }
-
-                        const data =
-                            await response.json();
-
-                        sala.innerHTML = `
-                            <option value="">
-                                Seleccionar sala
-                            </option>
-                        `;
-
-                        data.forEach(item => {
-
-                            sala.innerHTML += `
-                                <option value="${item.id_sala}">
-                                    ${item.nombre_s}
-                                </option>
-                            `;
-                        });
-
-                    } catch {
-
-                        mostrarMensaje(
-                            "Error cargando salas",
-                            "error"
-                        );
-                    }
-                }
-            );
-        }
-
-        // CARGAR MESAS
-
-        if (sala) {
-
-            sala.addEventListener(
-                "change",
-                async () => {
-
-                    mesa.innerHTML = `
-                        <option value="">
-                            Cargando mesas...
-                        </option>
-                    `;
-
-                    try {
-
-                        const response =
-                            await fetch(
-                                `/studyspace/public/api/mesas?sala=${sala.value}`
-                            );
-
-                        if (!response.ok) {
-                            throw new Error();
-                        }
-
-                        const data =
-                            await response.json();
-
-                        mesa.innerHTML = `
-                            <option value="">
-                                Seleccionar mesa
-                            </option>
-                        `;
-
-                        data.forEach(item => {
-
-                            mesa.innerHTML += `
-                                <option value="${item.id_mesa}">
-                                    Mesa ${item.numero}
-                                </option>
-                            `;
-                        });
-
-                    } catch {
-
-                        mostrarMensaje(
-                            "Error cargando mesas",
-                            "error"
-                        );
-                    }
-                }
-            );
-        }
-
-        // FORMULARIO
-
-        const form =
-            document.getElementById(
-                "formReserva"
-            );
-
-        if (!form) {
-            return;
-        }
+    if (form) {
 
         form.addEventListener(
             "submit",
@@ -150,111 +105,6 @@ document.addEventListener(
 
                 const formData =
                     new FormData(form);
-
-                const bibliotecaValue =
-                    biblioteca.value;
-
-                const salaValue =
-                    sala.value;
-
-                const mesaValue =
-                    mesa.value;
-
-                const fecha =
-                    formData.get("fecha");
-
-                const inicio =
-                    formData.get("inicio");
-
-                const fin =
-                    formData.get("fin");
-
-                // VALIDACIONES
-
-                if (!bibliotecaValue) {
-
-                    mostrarMensaje(
-                        "Debes seleccionar una biblioteca",
-                        "error"
-                    );
-
-                    return;
-                }
-
-                if (!salaValue) {
-
-                    mostrarMensaje(
-                        "Debes seleccionar una sala",
-                        "error"
-                    );
-
-                    return;
-                }
-
-                if (!mesaValue) {
-
-                    mostrarMensaje(
-                        "Debes seleccionar una mesa",
-                        "error"
-                    );
-
-                    return;
-                }
-
-                if (!fecha) {
-
-                    mostrarMensaje(
-                        "Debes seleccionar una fecha",
-                        "error"
-                    );
-
-                    return;
-                }
-
-                if (!inicio) {
-
-                    mostrarMensaje(
-                        "Debes seleccionar una hora de inicio",
-                        "error"
-                    );
-
-                    return;
-                }
-
-                if (!fin) {
-
-                    mostrarMensaje(
-                        "Debes seleccionar una hora de fin",
-                        "error"
-                    );
-
-                    return;
-                }
-
-                const hoy =
-                    new Date()
-                    .toISOString()
-                    .split("T")[0];
-
-                if (fecha < hoy) {
-
-                    mostrarMensaje(
-                        "No puedes reservar en fechas pasadas",
-                        "error"
-                    );
-
-                    return;
-                }
-
-                if (inicio >= fin) {
-
-                    mostrarMensaje(
-                        "La hora de fin debe ser posterior",
-                        "error"
-                    );
-
-                    return;
-                }
 
                 try {
 
@@ -266,10 +116,6 @@ document.addEventListener(
                                 body: formData
                             }
                         );
-
-                    if (!response.ok) {
-                        throw new Error();
-                    }
 
                     const data =
                         await response.json();
@@ -287,7 +133,7 @@ document.addEventListener(
                         );
                     }
 
-                } catch {
+                } catch (error) {
 
                     mostrarMensaje(
                         "Error de conexión",
@@ -297,10 +143,75 @@ document.addEventListener(
             }
         );
     }
-);
+
+    // ELIMINAR RESERVA
+    const botonesEliminar =
+        document.querySelectorAll(".btnEliminar");
+
+    botonesEliminar.forEach(btn => {
+
+        btn.addEventListener(
+            "click",
+            async (e) => {
+
+                e.preventDefault();
+
+                if (
+                    !confirm(
+                        "¿Eliminar reserva?"
+                    )
+                ) {
+                    return;
+                }
+
+                const id =
+                    btn.dataset.id;
+
+                const formData =
+                    new FormData();
+
+                formData.append("id", id);
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/studyspace/public/api/eliminar-reserva",
+                            {
+                                method: "POST",
+                                body: formData
+                            }
+                        );
+
+                    const data =
+                        await response.json();
+
+                    if (data.success) {
+
+                        document
+                            .getElementById(
+                                `fila-${id}`
+                            )
+                            .remove();
+
+                    } else {
+
+                        alert(data.message);
+                    }
+
+                } catch (error) {
+
+                    alert(
+                        "Error de conexión"
+                    );
+                }
+            }
+        );
+    });
+
+});
 
 // MENSAJES
-
 function mostrarMensaje(
     texto,
     tipo

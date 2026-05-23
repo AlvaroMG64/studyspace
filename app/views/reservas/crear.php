@@ -1,129 +1,131 @@
-<?php require_once "../app/views/layouts/header.php"; ?>
+<?php
 
-<?php require_once "../includes/helpers.php"; ?>
+declare(strict_types=1);
+
+/** @var mysqli_result $bibliotecas */
+
+require_once __DIR__ . "/../layouts/header.php";
+
+?>
 
 <h2 class="text-3xl font-bold mb-6">
-Crear Reserva
+    Crear Reserva
 </h2>
 
-<?php mensaje(); ?>
-
 <form
-id="formReserva"
-class="bg-white p-6 rounded-2xl shadow-lg max-w-xl"
+    id="formReserva"
+    class="bg-white p-6 rounded-2xl shadow-lg max-w-xl"
 >
 
-<label class="font-semibold">
-Biblioteca
-</label>
+    <label class="font-semibold">
+        Biblioteca
+    </label>
 
-<select
-id="biblioteca"
-required
-class="w-full mb-4 p-3 border rounded-xl"
->
+    <select
+        id="biblioteca"
+        required
+        class="w-full mb-4 p-3 border rounded-xl"
+    >
 
-<option value="">
-Seleccionar biblioteca
-</option>
+        <option value="">
+            Seleccionar biblioteca
+        </option>
 
-<?php while ($b = $bibliotecas->fetch_assoc()) { ?>
+        <?php while ($b = $bibliotecas->fetch_assoc()) : ?>
 
-<option value="<?= $b['id_biblioteca'] ?>">
+            <option value="<?= $b['id_biblioteca'] ?>">
 
-<?= htmlspecialchars($b['nombre_b']) ?>
+                <?= htmlspecialchars($b['nombre_b']) ?>
 
-</option>
+            </option>
 
-<?php } ?>
+        <?php endwhile; ?>
 
-</select>
+    </select>
 
-<label class="font-semibold">
-Sala
-</label>
+    <label class="font-semibold">
+        Sala
+    </label>
 
-<select
-id="sala"
-required
-class="w-full mb-4 p-3 border rounded-xl"
->
+    <select
+        id="sala"
+        required
+        class="w-full mb-4 p-3 border rounded-xl"
+    >
 
-<option value="">
-Seleccionar sala
-</option>
+        <option value="">
+            Seleccionar sala
+        </option>
 
-</select>
+    </select>
 
-<label class="font-semibold">
-Mesa
-</label>
+    <label class="font-semibold">
+        Mesa
+    </label>
 
-<select
-name="mesa"
-id="mesa"
-required
-class="w-full mb-4 p-3 border rounded-xl"
->
+    <select
+        name="mesa"
+        id="mesa"
+        required
+        class="w-full mb-4 p-3 border rounded-xl"
+    >
 
-<option value="">
-Seleccionar mesa
-</option>
+        <option value="">
+            Seleccionar mesa
+        </option>
 
-</select>
+    </select>
 
-<label class="font-semibold">
-Fecha
-</label>
+    <label class="font-semibold">
+        Fecha
+    </label>
 
-<input
-type="date"
-name="fecha"
-required
-min="<?= date('Y-m-d') ?>"
-class="w-full mb-4 p-3 border rounded-xl"
->
+    <input
+        type="date"
+        name="fecha"
+        min="<?= date('Y-m-d') ?>"
+        required
+        class="w-full mb-4 p-3 border rounded-xl"
+    >
 
-<label class="font-semibold">
-Hora inicio
-</label>
+    <label class="font-semibold">
+        Hora inicio
+    </label>
 
-<input
-type="time"
-name="inicio"
-required
-class="w-full mb-4 p-3 border rounded-xl"
->
+    <input
+        type="time"
+        name="inicio"
+        required
+        class="w-full mb-4 p-3 border rounded-xl"
+    >
 
-<label class="font-semibold">
-Hora fin
-</label>
+    <label class="font-semibold">
+        Hora fin
+    </label>
 
-<input
-type="time"
-name="fin"
-required
-class="w-full mb-6 p-3 border rounded-xl"
->
+    <input
+        type="time"
+        name="fin"
+        required
+        class="w-full mb-6 p-3 border rounded-xl"
+    >
 
-<button
-class="
-w-full
-bg-gradient-to-r
-from-blue-500
-to-blue-700
-text-white
-py-3
-rounded-xl
-hover:scale-105
-transition
-shadow-lg
-"
->
-
-Crear reserva
-
-</button>
+    <button
+        class="
+        w-full
+        bg-gradient-to-r
+        from-blue-500
+        to-blue-700
+        text-white
+        py-3
+        rounded-xl
+        hover:scale-105
+        transition
+        shadow-lg
+        "
+    >
+        Crear reserva
+    </button>
 
 </form>
 
@@ -131,4 +133,6 @@ Crear reserva
 
 <script src="/studyspace/resources/js/reservas.js"></script>
 
-<?php require_once "../app/views/layouts/footer.php"; ?>
+<?php
+
+require_once __DIR__ . "/../layouts/footer.php";
