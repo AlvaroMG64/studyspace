@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../layouts/header.php';
+require_once "../app/views/layouts/header.php";
 ?>
 
 <h1 class="text-4xl font-bold mb-8">
@@ -84,5 +84,5 @@ class="text-4xl font-bold"
 <script src="/studyspace/resources/js/dashboard.js"></script>
 
 <?php
-require_once __DIR__ . '/../layouts/footer.php';
+require_once "../app/views/layouts/footer.php";
 ?>

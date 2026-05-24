@@ -1,4 +1,4 @@
-<?php require_once "../includes/helpers.php"; ?>
+<?php require_once "../core/helpers.php"; ?>
 
 <!DOCTYPE html>
 <html lang="es">

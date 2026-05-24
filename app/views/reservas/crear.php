@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /** @var mysqli_result $bibliotecas */
 
-require_once __DIR__ . "/../layouts/header.php";
+require_once "../app/views/layouts/header.php";
 
 ?>
 
@@ -135,4 +135,4 @@ require_once __DIR__ . "/../layouts/header.php";
 
 <?php
 
-require_once __DIR__ . "/../layouts/footer.php";
+require_once "../app/views/layouts/footer.php";
