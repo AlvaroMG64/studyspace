@@ -51,7 +51,7 @@ require_once "../app/views/layouts/header.php";
         <?php while ($r = $reservas->fetch_assoc()) : ?>
 
             <tr
-                id="fila-<?= $r['id_reserva'] ?>"
+                id="fila-<?= (int)$r['id_reserva'] ?>"
                 class="border-t"
             >
 
@@ -70,7 +70,7 @@ require_once "../app/views/layouts/header.php";
                 </td>
 
                 <td class="p-3">
-                    Mesa <?= htmlspecialchars($r['numero']) ?>
+                    Mesa <?= (int)$r['numero'] ?>
                 </td>
 
                 <td class="p-3">
@@ -84,7 +84,7 @@ require_once "../app/views/layouts/header.php";
                 <td class="p-3 flex gap-4">
 
                     <a
-                        href="/studyspace/public/editar-reserva?id=<?= $r['id_reserva'] ?>"
+                        href="/studyspace/public/editar-reserva?id=<?= (int)$r['id_reserva'] ?>"
                         class="text-blue-600 hover:underline"
                     >
                         Editar
@@ -92,7 +92,7 @@ require_once "../app/views/layouts/header.php";
 
                     <button
                         class="text-red-600 btnEliminar"
-                        data-id="<?= $r['id_reserva'] ?>"
+                        data-id="<?= (int)$r['id_reserva'] ?>"
                     >
                         Eliminar
                     </button>
@@ -114,3 +114,4 @@ require_once "../app/views/layouts/header.php";
 <?php
 
 require_once "../app/views/layouts/footer.php";
+?>

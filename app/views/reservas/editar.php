@@ -8,80 +8,137 @@ require_once "../app/views/layouts/header.php";
 
 ?>
 
-<h2 class="text-3xl font-bold mb-6">
-    Editar Reserva
-</h2>
+<div class="flex justify-center">
 
-<form
-    id="formEditar"
-    class="bg-white p-6 rounded-2xl shadow-lg max-w-xl"
->
+    <div class="w-full max-w-3xl">
 
-    <input
-        type="hidden"
-        name="id"
-        value="<?= $reserva['id_reserva'] ?>"
-    >
+        <h2 class="text-4xl font-bold mb-8 text-center">
+            Editar Reserva
+        </h2>
 
-    <label class="font-semibold">
-        Fecha
-    </label>
+        <form
+            id="formEditar"
+            class="bg-white p-8 rounded-3xl shadow-xl"
+        >
 
-    <input
-        type="date"
-        name="fecha"
-        value="<?= $reserva['fecha_r'] ?>"
-        required
-        class="w-full mb-4 p-3 border rounded-xl"
-    >
+            <div
+                id="mensajeAjax"
+                class="mb-6"
+            ></div>
 
-    <label class="font-semibold">
-        Hora inicio
-    </label>
+            <input
+                type="hidden"
+                name="id"
+                value="<?= (int)$reserva['id_reserva'] ?>"
+            >
 
-    <input
-        type="time"
-        name="inicio"
-        value="<?= $reserva['hora_inicio'] ?>"
-        required
-        class="w-full mb-4 p-3 border rounded-xl"
-    >
+            <input
+                type="hidden"
+                name="mesa"
+                value="<?= (int)$reserva['id_mesa'] ?>"
+            >
 
-    <label class="font-semibold">
-        Hora fin
-    </label>
+            <div class="bg-blue-50 border border-blue-200 p-5 rounded-2xl mb-8">
 
-    <input
-        type="time"
-        name="fin"
-        value="<?= $reserva['hora_fin'] ?>"
-        required
-        class="w-full mb-6 p-3 border rounded-xl"
-    >
+                <p class="mb-2">
+                    <span class="font-semibold">Biblioteca:</span>
+                    <?= htmlspecialchars($reserva['nombre_b']) ?>
+                </p>
 
-    <button
-        class="
-        w-full
-        bg-gradient-to-r
-        from-blue-500
-        to-indigo-600
-        text-white
-        py-3
-        rounded-xl
-        hover:scale-105
-        transition
-        shadow-lg
-        "
-    >
-        Guardar cambios
-    </button>
+                <p class="mb-2">
+                    <span class="font-semibold">Sala:</span>
+                    <?= htmlspecialchars($reserva['nombre_s']) ?>
+                </p>
 
-</form>
+                <p>
+                    <span class="font-semibold">Mesa:</span>
+                    <?= (int)$reserva['numero'] ?>
+                </p>
 
-<div id="mensajeAjax" class="mt-4"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <div>
+
+                    <label class="font-semibold block mb-2">
+                        Fecha
+                    </label>
+
+                    <input
+                        type="date"
+                        name="fecha"
+                        value="<?= htmlspecialchars($reserva['fecha_r']) ?>"
+                        min="<?= date('Y-m-d') ?>"
+                        required
+                        class="w-full p-3 border rounded-xl"
+                    >
+
+                </div>
+
+                <div>
+
+                    <label class="font-semibold block mb-2">
+                        Hora inicio
+                    </label>
+
+                    <input
+                        type="time"
+                        name="inicio"
+                        value="<?= substr($reserva['hora_inicio'], 0, 5) ?>"
+                        required
+                        class="w-full p-3 border rounded-xl"
+                    >
+
+                </div>
+
+                <div>
+
+                    <label class="font-semibold block mb-2">
+                        Hora fin
+                    </label>
+
+                    <input
+                        type="time"
+                        name="fin"
+                        value="<?= substr($reserva['hora_fin'], 0, 5) ?>"
+                        required
+                        class="w-full p-3 border rounded-xl"
+                    >
+
+                </div>
+
+            </div>
+
+            <button
+                class="
+                mt-8
+                w-full
+                bg-gradient-to-r
+                from-indigo-500
+                to-blue-700
+                text-white
+                py-4
+                rounded-2xl
+                hover:scale-[1.01]
+                transition
+                shadow-lg
+                font-semibold
+                text-lg
+                "
+            >
+                Guardar cambios
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
 
 <script src="/studyspace/resources/js/reservas.js"></script>
 
 <?php
 
 require_once "../app/views/layouts/footer.php";
+?>

@@ -189,18 +189,31 @@ class ReservaController extends Controller {
     }
 
     // ACTUALIZAR
-    public function actualizar() {
+    public function actualizar(): void {
+        
+        header('Content-Type: application/json');
 
         $id = intval($_POST['id'] ?? 0);
 
-        $fecha = $_POST['fecha'] ?? '';
-        $inicio = $_POST['inicio'] ?? '';
-        $fin = $_POST['fin'] ?? '';
-        $mesa = intval($_POST['mesa'] ?? 0);
+        $fecha =
+            trim($_POST['fecha'] ?? '');
 
-        $usuario = $_SESSION['id'];
+        $inicio =
+            trim($_POST['inicio'] ?? '');
+
+        $fin =
+            trim($_POST['fin'] ?? '');
+
+        $mesa =
+            intval($_POST['mesa'] ?? 0);
+
+        $usuario =
+            $_SESSION['id'];
+
+        // VALIDAR CAMPOS
 
         if (
+            !$id ||
             !$fecha ||
             !$inicio ||
             !$fin ||
@@ -210,52 +223,103 @@ class ReservaController extends Controller {
             echo json_encode([
                 "success" => false,
                 "message" =>
-                    "Debes completar todos los campos"
+                    "Todos los campos son obligatorios"
             ]);
 
             exit;
         }
+
+        // VALIDAR FECHA
+
+        if ($fecha < date("Y-m-d")) {
+
+            echo json_encode([
+                "success" => false,
+                "message" =>
+                    "No puedes reservar fechas pasadas"
+            ]);
+
+            exit;
+        }
+
+        // VALIDAR HORARIO
 
         if ($inicio >= $fin) {
 
             echo json_encode([
                 "success" => false,
                 "message" =>
-                    "La hora de fin debe ser posterior a la hora de inicio"
+                    "La hora de fin debe ser posterior"
             ]);
 
             exit;
         }
 
+        // VALIDAR RESERVA EXISTE
+
+        $reserva =
+            $this->model->obtenerPorId($id);
+
+        if (!$reserva) {
+
+            echo json_encode([
+                "success" => false,
+                "message" =>
+                    "Reserva no encontrada"
+            ]);
+
+            exit;
+        }
+
+        // VALIDAR PROPIETARIO
+
         if (
-            $this->model
-            ->existeSolapamientoMesa(
-                $mesa,
-                $fecha,
-                $inicio,
-                $fin,
-                $id
-            )
+            $reserva['id_usuario']
+            != $usuario
         ) {
 
             echo json_encode([
                 "success" => false,
                 "message" =>
-                    "La mesa ya está ocupada"
+                    "No autorizado"
             ]);
 
             exit;
         }
 
+        // SOLAPAMIENTO MESA
+
         if (
             $this->model
-            ->existeSolapamientoUsuario(
-                $usuario,
-                $fecha,
-                $inicio,
-                $fin,
-                $id
-            )
+                ->existeSolapamientoMesa(
+                    $mesa,
+                    $fecha,
+                    $inicio,
+                    $fin,
+                    $id
+                )
+        ) {
+
+            echo json_encode([
+                "success" => false,
+                "message" =>
+                    "La mesa ya está ocupada en ese horario"
+            ]);
+
+            exit;
+        }
+
+        // SOLAPAMIENTO USUARIO
+
+        if (
+            $this->model
+                ->existeSolapamientoUsuario(
+                    $usuario,
+                    $fecha,
+                    $inicio,
+                    $fin,
+                    $id
+                )
         ) {
 
             echo json_encode([
@@ -267,17 +331,33 @@ class ReservaController extends Controller {
             exit;
         }
 
-        $this->model->actualizar(
-            $id,
-            $fecha,
-            $inicio,
-            $fin,
-            $mesa
-        );
+        // ACTUALIZAR
+
+        $actualizado =
+            $this->model->actualizar(
+                $id,
+                $fecha,
+                $inicio,
+                $fin,
+                $mesa
+            );
+
+        if (!$actualizado) {
+
+            echo json_encode([
+                "success" => false,
+                "message" =>
+                    "Error actualizando reserva"
+            ]);
+
+            exit;
+        }
 
         echo json_encode([
             "success" => true
         ]);
+
+        exit;
     }
 
     // ELIMINAR

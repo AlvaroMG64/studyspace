@@ -9,37 +9,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const mesa =
         document.getElementById("mesa");
 
+    // ======================
     // CARGAR SALAS
+    // ======================
+
     if (biblioteca) {
 
         biblioteca.addEventListener(
             "change",
             async () => {
 
-                sala.innerHTML = `
-                    <option value="">
-                        Cargando salas...
-                    </option>
-                `;
+                sala.innerHTML =
+                    `<option>Cargando...</option>`;
 
-                mesa.innerHTML = `
-                    <option value="">
-                        Seleccionar mesa
-                    </option>
-                `;
-
-                const response = await fetch(
-                    `/studyspace/public/api/salas?biblioteca=${biblioteca.value}`
-                );
+                const response =
+                    await fetch(
+                        `/studyspace/public/api/salas?biblioteca=${biblioteca.value}`
+                    );
 
                 const data =
                     await response.json();
 
-                sala.innerHTML = `
-                    <option value="">
-                        Seleccionar sala
-                    </option>
-                `;
+                sala.innerHTML =
+                    `<option value="">Seleccionar sala</option>`;
 
                 data.forEach(item => {
 
@@ -53,31 +45,29 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
+    // ======================
     // CARGAR MESAS
+    // ======================
+
     if (sala) {
 
         sala.addEventListener(
             "change",
             async () => {
 
-                mesa.innerHTML = `
-                    <option value="">
-                        Cargando mesas...
-                    </option>
-                `;
+                mesa.innerHTML =
+                    `<option>Cargando...</option>`;
 
-                const response = await fetch(
-                    `/studyspace/public/api/mesas?sala=${sala.value}`
-                );
+                const response =
+                    await fetch(
+                        `/studyspace/public/api/mesas?sala=${sala.value}`
+                    );
 
                 const data =
                     await response.json();
 
-                mesa.innerHTML = `
-                    <option value="">
-                        Seleccionar mesa
-                    </option>
-                `;
+                mesa.innerHTML =
+                    `<option value="">Seleccionar mesa</option>`;
 
                 data.forEach(item => {
 
@@ -91,60 +81,72 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-    // FORM CREAR RESERVA
-    const form =
+    // ======================
+    // CREAR
+    // ======================
+
+    const formReserva =
         document.getElementById("formReserva");
 
-    if (form) {
+    if (formReserva) {
 
-        form.addEventListener(
+        formReserva.addEventListener(
             "submit",
             async (e) => {
 
                 e.preventDefault();
 
                 const formData =
-                    new FormData(form);
+                    new FormData(formReserva);
 
-                try {
-
-                    const response =
-                        await fetch(
-                            "/studyspace/public/guardar-reserva",
-                            {
-                                method: "POST",
-                                body: formData
-                            }
-                        );
-
-                    const data =
-                        await response.json();
-
-                    if (data.success) {
-
-                        window.location.href =
-                            "/studyspace/public/mis-reservas";
-
-                    } else {
-
-                        mostrarMensaje(
-                            data.message,
-                            "error"
-                        );
-                    }
-
-                } catch (error) {
-
-                    mostrarMensaje(
-                        "Error de conexión",
-                        "error"
-                    );
+                if (!validarFormulario(formData)) {
+                    return;
                 }
+
+                enviarFormulario(
+                    "/studyspace/public/guardar-reserva",
+                    formData,
+                    "Reserva creada correctamente"
+                );
             }
         );
     }
 
-    // ELIMINAR RESERVA
+    // ======================
+    // EDITAR
+    // ======================
+
+    const formEditar =
+        document.getElementById("formEditar");
+
+    if (formEditar) {
+
+        formEditar.addEventListener(
+            "submit",
+            async (e) => {
+
+                e.preventDefault();
+
+                const formData =
+                    new FormData(formEditar);
+
+                if (!validarFormulario(formData)) {
+                    return;
+                }
+
+                enviarFormulario(
+                    "/studyspace/public/actualizar-reserva",
+                    formData,
+                    "Reserva actualizada correctamente"
+                );
+            }
+        );
+    }
+
+    // ======================
+    // ELIMINAR
+    // ======================
+
     const botonesEliminar =
         document.querySelectorAll(".btnEliminar");
 
@@ -152,75 +154,143 @@ document.addEventListener("DOMContentLoaded", () => {
 
         btn.addEventListener(
             "click",
-            async (e) => {
+            () => {
 
-                e.preventDefault();
-
-                if (
-                    !confirm(
-                        "¿Eliminar reserva?"
-                    )
-                ) {
-                    return;
-                }
-
-                const id =
-                    btn.dataset.id;
-
-                const formData =
-                    new FormData();
-
-                formData.append("id", id);
-
-                try {
-
-                    const response =
-                        await fetch(
-                            "/studyspace/public/api/eliminar-reserva",
-                            {
-                                method: "POST",
-                                body: formData
-                            }
-                        );
-
-                    const data =
-                        await response.json();
-
-                    if (data.success) {
-
-                        document
-                            .getElementById(
-                                `fila-${id}`
-                            )
-                            .remove();
-
-                    } else {
-
-                        alert(data.message);
-                    }
-
-                } catch (error) {
-
-                    alert(
-                        "Error de conexión"
-                    );
-                }
+                abrirModalEliminar(
+                    btn.dataset.id
+                );
             }
         );
     });
 
 });
 
+// ======================
+// ENVIAR FORMULARIO
+// ======================
+
+async function enviarFormulario(
+    url,
+    formData,
+    mensaje
+) {
+
+    try {
+
+        const response =
+            await fetch(url, {
+                method: "POST",
+                body: formData
+            });
+
+        const data =
+            await response.json();
+
+        if (data.success) {
+
+            mostrarMensaje(
+                mensaje,
+                "success"
+            );
+
+            setTimeout(() => {
+
+                window.location.href =
+                    "/studyspace/public/mis-reservas";
+
+            }, 1200);
+
+        } else {
+
+            mostrarMensaje(
+                data.message,
+                "error"
+            );
+        }
+
+    } catch (error) {
+
+        mostrarMensaje(
+            "Error de conexión",
+            "error"
+        );
+    }
+}
+
+// ======================
+// VALIDACIONES
+// ======================
+
+function validarFormulario(formData) {
+
+    const fecha =
+        formData.get("fecha");
+
+    const inicio =
+        formData.get("inicio");
+
+    const fin =
+        formData.get("fin");
+
+    const hoy =
+        new Date()
+            .toISOString()
+            .split("T")[0];
+
+    if (!fecha) {
+
+        mostrarMensaje(
+            "Debes seleccionar una fecha",
+            "error"
+        );
+
+        return false;
+    }
+
+    if (fecha < hoy) {
+
+        mostrarMensaje(
+            "No puedes seleccionar fechas pasadas",
+            "error"
+        );
+
+        return false;
+    }
+
+    if (!inicio || !fin) {
+
+        mostrarMensaje(
+            "Debes seleccionar un horario",
+            "error"
+        );
+
+        return false;
+    }
+
+    if (inicio >= fin) {
+
+        mostrarMensaje(
+            "La hora final debe ser posterior",
+            "error"
+        );
+
+        return false;
+    }
+
+    return true;
+}
+
+// ======================
 // MENSAJES
+// ======================
+
 function mostrarMensaje(
     texto,
     tipo
 ) {
 
     const div =
-        document.getElementById(
-            "mensajeAjax"
-        );
+        document.getElementById("mensajeAjax");
 
     if (!div) {
         return;
@@ -229,8 +299,11 @@ function mostrarMensaje(
     div.innerHTML = `
         <div class="
             p-4
-            rounded-xl
+            rounded-2xl
+            text-center
+            font-medium
             shadow
+            animate-pulse
             ${
                 tipo === "success"
                 ? "bg-green-100 text-green-700 border border-green-400"
@@ -240,4 +313,111 @@ function mostrarMensaje(
             ${texto}
         </div>
     `;
+}
+
+// ======================
+// MODAL ELIMINAR
+// ======================
+
+function abrirModalEliminar(id) {
+
+    const modal = document.createElement("div");
+
+    modal.className = `
+        fixed inset-0
+        bg-black/50
+        flex items-center justify-center
+        z-50
+    `;
+
+    modal.innerHTML = `
+        <div class="
+            bg-white
+            p-8
+            rounded-3xl
+            shadow-2xl
+            w-full
+            max-w-md
+            text-center
+        ">
+
+            <h3 class="text-2xl font-bold mb-4">
+                Eliminar reserva
+            </h3>
+
+            <p class="text-gray-600 mb-8">
+                ¿Seguro que deseas eliminar esta reserva?
+            </p>
+
+            <div class="flex gap-4">
+
+                <button
+                    id="cancelarEliminar"
+                    class="
+                    flex-1
+                    bg-gray-200
+                    py-3
+                    rounded-xl
+                    "
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    id="confirmarEliminar"
+                    class="
+                    flex-1
+                    bg-red-600
+                    text-white
+                    py-3
+                    rounded-xl
+                    "
+                >
+                    Eliminar
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    document
+        .getElementById("cancelarEliminar")
+        .onclick = () => {
+
+            modal.remove();
+        };
+
+    document
+        .getElementById("confirmarEliminar")
+        .onclick = async () => {
+
+            const formData =
+                new FormData();
+
+            formData.append("id", id);
+
+            const response =
+                await fetch(
+                    "/studyspace/public/eliminar-reserva",
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            if (data.success) {
+
+                document
+                    .getElementById(`fila-${id}`)
+                    ?.remove();
+            }
+
+            modal.remove();
+        };
 }

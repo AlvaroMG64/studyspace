@@ -8,131 +8,186 @@ require_once "../app/views/layouts/header.php";
 
 ?>
 
-<h2 class="text-3xl font-bold mb-6">
-    Crear Reserva
-</h2>
+<div class="flex justify-center">
 
-<form
-    id="formReserva"
-    class="bg-white p-6 rounded-2xl shadow-lg max-w-xl"
->
+    <div class="w-full max-w-6xl">
 
-    <label class="font-semibold">
-        Biblioteca
-    </label>
+        <h2 class="text-4xl font-bold mb-8 text-center font-display">
+            Crear Reserva
+        </h2>
 
-    <select
-        id="biblioteca"
-        required
-        class="w-full mb-4 p-3 border rounded-xl"
-    >
+        <form
+            id="formReserva"
+            class="bg-white p-10 rounded-3xl shadow-xl"
+        >
 
-        <option value="">
-            Seleccionar biblioteca
-        </option>
+            <div
+                id="mensajeAjax"
+                class="mb-6"
+            ></div>
 
-        <?php while ($b = $bibliotecas->fetch_assoc()) : ?>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-            <option value="<?= $b['id_biblioteca'] ?>">
+                <!-- BIBLIOTECA -->
 
-                <?= htmlspecialchars($b['nombre_b']) ?>
+                <div>
 
-            </option>
+                    <label class="font-semibold block mb-2">
+                        Biblioteca
+                    </label>
 
-        <?php endwhile; ?>
+                    <select
+                        id="biblioteca"
+                        required
+                        class="w-full p-3 border rounded-xl"
+                    >
 
-    </select>
+                        <option value="">
+                            Seleccionar biblioteca
+                        </option>
 
-    <label class="font-semibold">
-        Sala
-    </label>
+                        <?php while ($b = $bibliotecas->fetch_assoc()) : ?>
 
-    <select
-        id="sala"
-        required
-        class="w-full mb-4 p-3 border rounded-xl"
-    >
+                            <option value="<?= (int)$b['id_biblioteca'] ?>">
 
-        <option value="">
-            Seleccionar sala
-        </option>
+                                <?= htmlspecialchars($b['nombre_b']) ?>
 
-    </select>
+                            </option>
 
-    <label class="font-semibold">
-        Mesa
-    </label>
+                        <?php endwhile; ?>
 
-    <select
-        name="mesa"
-        id="mesa"
-        required
-        class="w-full mb-4 p-3 border rounded-xl"
-    >
+                    </select>
 
-        <option value="">
-            Seleccionar mesa
-        </option>
+                </div>
 
-    </select>
+                <!-- SALA -->
 
-    <label class="font-semibold">
-        Fecha
-    </label>
+                <div>
 
-    <input
-        type="date"
-        name="fecha"
-        min="<?= date('Y-m-d') ?>"
-        required
-        class="w-full mb-4 p-3 border rounded-xl"
-    >
+                    <label class="font-semibold block mb-2">
+                        Sala
+                    </label>
 
-    <label class="font-semibold">
-        Hora inicio
-    </label>
+                    <select
+                        id="sala"
+                        required
+                        class="w-full p-3 border rounded-xl"
+                    >
 
-    <input
-        type="time"
-        name="inicio"
-        required
-        class="w-full mb-4 p-3 border rounded-xl"
-    >
+                        <option value="">
+                            Seleccionar sala
+                        </option>
 
-    <label class="font-semibold">
-        Hora fin
-    </label>
+                    </select>
 
-    <input
-        type="time"
-        name="fin"
-        required
-        class="w-full mb-6 p-3 border rounded-xl"
-    >
+                </div>
 
-    <button
-        class="
-        w-full
-        bg-gradient-to-r
-        from-blue-500
-        to-blue-700
-        text-white
-        py-3
-        rounded-xl
-        hover:scale-105
-        transition
-        shadow-lg
-        "
-    >
-        Crear reserva
-    </button>
+                <!-- MESA -->
 
-</form>
+                <div>
 
-<div id="mensajeAjax" class="mt-4"></div>
+                    <label class="font-semibold block mb-2">
+                        Mesa
+                    </label>
+
+                    <select
+                        name="mesa"
+                        id="mesa"
+                        required
+                        class="w-full p-3 border rounded-xl"
+                    >
+
+                        <option value="">
+                            Seleccionar mesa
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- FECHA -->
+
+                <div>
+
+                    <label class="font-semibold block mb-2">
+                        Fecha
+                    </label>
+
+                    <input
+                        type="date"
+                        name="fecha"
+                        min="<?= date('Y-m-d') ?>"
+                        required
+                        class="w-full p-3 border rounded-xl"
+                    >
+
+                </div>
+
+                <!-- HORA INICIO -->
+
+                <div>
+
+                    <label class="font-semibold block mb-2">
+                        Hora inicio
+                    </label>
+
+                    <input
+                        type="time"
+                        name="inicio"
+                        required
+                        class="w-full p-3 border rounded-xl"
+                    >
+
+                </div>
+
+                <!-- HORA FIN -->
+
+                <div>
+
+                    <label class="font-semibold block mb-2">
+                        Hora fin
+                    </label>
+
+                    <input
+                        type="time"
+                        name="fin"
+                        required
+                        class="w-full p-3 border rounded-xl"
+                    >
+
+                </div>
+
+            </div>
+
+            <button
+                class="
+                mt-10
+                w-full
+                bg-gradient-to-r
+                from-blue-500
+                to-blue-700
+                text-white
+                py-4
+                rounded-2xl
+                hover:scale-[1.01]
+                transition
+                shadow-lg
+                font-semibold
+                text-lg
+                "
+            >
+                Crear reserva
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
 
 <script src="/studyspace/resources/js/reservas.js"></script>
 
 <?php
 
 require_once "../app/views/layouts/footer.php";
+?>

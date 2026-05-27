@@ -24,7 +24,41 @@ if (!isset($_SESSION['id'])) {
 
     <title>StudySpace</title>
 
+    <!-- TAILWIND -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- GOOGLE FONTS -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Roboto:wght@300;400;500;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        .font-display {
+            font-family: 'Poppins', sans-serif;
+        }
+
+    </style>
 
 </head>
 
@@ -34,7 +68,7 @@ if (!isset($_SESSION['id'])) {
 
     <div class="max-w-7xl mx-auto flex justify-between items-center">
 
-        <h1 class="text-2xl font-bold">
+        <h1 class="text-2xl font-bold font-display">
             StudySpace
         </h1>
 
