@@ -19,28 +19,50 @@ document.addEventListener("DOMContentLoaded", () => {
             "change",
             async () => {
 
-                sala.innerHTML =
-                    `<option>Cargando...</option>`;
-
-                const response =
-                    await fetch(
-                        `/studyspace/public/api/salas?biblioteca=${biblioteca.value}`
-                    );
-
-                const data =
-                    await response.json();
-
+                // RESET SALAS
                 sala.innerHTML =
                     `<option value="">Seleccionar sala</option>`;
 
-                data.forEach(item => {
+                // RESET MESAS
+                mesa.innerHTML =
+                    `<option value="">Seleccionar mesa</option>`;
 
-                    sala.innerHTML += `
-                        <option value="${item.id_sala}">
-                            ${item.nombre_s}
-                        </option>
-                    `;
-                });
+                if (!biblioteca.value) {
+                    return;
+                }
+
+                sala.innerHTML =
+                    `<option>Cargando...</option>`;
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `/studyspace/public/api/salas?biblioteca=${biblioteca.value}`
+                        );
+
+                    const data =
+                        await response.json();
+
+                    sala.innerHTML =
+                        `<option value="">Seleccionar sala</option>`;
+
+                    data.forEach(item => {
+
+                        sala.innerHTML += `
+                            <option value="${item.id_sala}">
+                                ${item.nombre_s}
+                            </option>
+                        `;
+                    });
+
+                } catch (error) {
+
+                    mostrarMensaje(
+                        "Error cargando salas",
+                        "error"
+                    );
+                }
             }
         );
     }
@@ -56,27 +78,44 @@ document.addEventListener("DOMContentLoaded", () => {
             async () => {
 
                 mesa.innerHTML =
-                    `<option>Cargando...</option>`;
-
-                const response =
-                    await fetch(
-                        `/studyspace/public/api/mesas?sala=${sala.value}`
-                    );
-
-                const data =
-                    await response.json();
-
-                mesa.innerHTML =
                     `<option value="">Seleccionar mesa</option>`;
 
-                data.forEach(item => {
+                if (!sala.value) {
+                    return;
+                }
 
-                    mesa.innerHTML += `
-                        <option value="${item.id_mesa}">
-                            Mesa ${item.numero}
-                        </option>
-                    `;
-                });
+                mesa.innerHTML =
+                    `<option>Cargando...</option>`;
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `/studyspace/public/api/mesas?sala=${sala.value}`
+                        );
+
+                    const data =
+                        await response.json();
+
+                    mesa.innerHTML =
+                        `<option value="">Seleccionar mesa</option>`;
+
+                    data.forEach(item => {
+
+                        mesa.innerHTML += `
+                            <option value="${item.id_mesa}">
+                                Mesa ${item.numero}
+                            </option>
+                        `;
+                    });
+
+                } catch (error) {
+
+                    mostrarMensaje(
+                        "Error cargando mesas",
+                        "error"
+                    );
+                }
             }
         );
     }
@@ -188,10 +227,7 @@ async function enviarFormulario(
 
         if (data.success) {
 
-            mostrarMensaje(
-                mensaje,
-                "success"
-            );
+            mostrarToastCentro(mensaje);
 
             setTimeout(() => {
 
@@ -240,7 +276,7 @@ function validarFormulario(formData) {
     if (!fecha) {
 
         mostrarMensaje(
-            "Debes seleccionar una fecha",
+            "Debe seleccionar una fecha",
             "error"
         );
 
@@ -250,7 +286,7 @@ function validarFormulario(formData) {
     if (fecha < hoy) {
 
         mostrarMensaje(
-            "No puedes seleccionar fechas pasadas",
+            "No puede seleccionar fechas pasadas",
             "error"
         );
 
@@ -260,7 +296,7 @@ function validarFormulario(formData) {
     if (!inicio || !fin) {
 
         mostrarMensaje(
-            "Debes seleccionar un horario",
+            "Debe seleccionar un horario",
             "error"
         );
 
@@ -270,7 +306,20 @@ function validarFormulario(formData) {
     if (inicio >= fin) {
 
         mostrarMensaje(
-            "La hora final debe ser posterior",
+            "La hora de fin debe ser posterior a la de inicio",
+            "error"
+        );
+
+        return false;
+    }
+
+    const mesa =
+        formData.get("mesa");
+
+    if (!mesa) {
+
+        mostrarMensaje(
+            "Debes seleccionar una mesa",
             "error"
         );
 
@@ -281,7 +330,7 @@ function validarFormulario(formData) {
 }
 
 // ======================
-// MENSAJES
+// MENSAJES EN CARD
 // ======================
 
 function mostrarMensaje(
@@ -290,7 +339,9 @@ function mostrarMensaje(
 ) {
 
     const div =
-        document.getElementById("mensajeAjax");
+        document.getElementById(
+            "mensajeAjax"
+        );
 
     if (!div) {
         return;
@@ -302,8 +353,7 @@ function mostrarMensaje(
             rounded-2xl
             text-center
             font-medium
-            shadow
-            animate-pulse
+            shadow-sm
             ${
                 tipo === "success"
                 ? "bg-green-100 text-green-700 border border-green-400"
@@ -324,9 +374,12 @@ function abrirModalEliminar(id) {
     const modal = document.createElement("div");
 
     modal.className = `
-        fixed inset-0
+        fixed
+        inset-0
         bg-black/50
-        flex items-center justify-center
+        flex
+        items-center
+        justify-center
         z-50
     `;
 
@@ -341,12 +394,17 @@ function abrirModalEliminar(id) {
             text-center
         ">
 
-            <h3 class="text-2xl font-bold mb-4">
+            <h3 class="
+                text-2xl
+                font-bold
+                mb-4
+                font-display
+            ">
                 Eliminar reserva
             </h3>
 
             <p class="text-gray-600 mb-8">
-                ¿Seguro que deseas eliminar esta reserva?
+                ¿Seguro que desea eliminar esta reserva?
             </p>
 
             <div class="flex gap-4">
@@ -399,25 +457,106 @@ function abrirModalEliminar(id) {
 
             formData.append("id", id);
 
-            const response =
-                await fetch(
-                    "/studyspace/public/eliminar-reserva",
-                    {
-                        method: "POST",
-                        body: formData
-                    }
+            try {
+
+                const response =
+                    await fetch(
+                        "/studyspace/public/eliminar-reserva",
+                        {
+                            method: "POST",
+                            body: formData
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if (data.success) {
+
+                    document
+                        .getElementById(`fila-${id}`)
+                        ?.remove();
+
+                    mostrarToastCentro(
+                        "Reserva eliminada"
+                    );
+
+                } else {
+
+                    mostrarMensaje(
+                        data.message,
+                        "error"
+                    );
+                }
+
+            } catch (error) {
+
+                mostrarMensaje(
+                    "Error eliminando reserva",
+                    "error"
                 );
-
-            const data =
-                await response.json();
-
-            if (data.success) {
-
-                document
-                    .getElementById(`fila-${id}`)
-                    ?.remove();
             }
 
             modal.remove();
         };
+}
+
+// ======================
+// TOAST CENTRADO
+// ======================
+
+function mostrarToastCentro(texto) {
+
+    const overlay =
+        document.createElement("div");
+
+    overlay.className = `
+        fixed
+        inset-0
+        bg-black/40
+        flex
+        items-center
+        justify-center
+        z-[9999]
+    `;
+
+    const toast =
+        document.createElement("div");
+
+    toast.className = `
+        bg-white
+        text-gray-800
+        px-10
+        py-6
+        rounded-3xl
+        shadow-2xl
+        text-center
+        max-w-md
+        w-full
+    `;
+
+    toast.innerHTML = `
+        <h3 class="
+            text-2xl
+            font-bold
+            mb-2
+            font-display
+        ">
+            ${texto}
+        </h3>
+
+        <p class="text-gray-500">
+            Operación realizada correctamente
+        </p>
+    `;
+
+    overlay.appendChild(toast);
+
+    document.body.appendChild(overlay);
+
+    setTimeout(() => {
+
+        overlay.remove();
+
+    }, 1800);
 }

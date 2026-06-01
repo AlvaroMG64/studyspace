@@ -97,6 +97,7 @@ if (!isset($_SESSION['id'])) {
 
             <a
                 href="/studyspace/public/logout"
+                onclick="return confirmarLogout(event)"
                 class="bg-red-500 px-4 py-2 rounded-xl hover:bg-red-600 transition"
             >
                 Salir
@@ -107,5 +108,71 @@ if (!isset($_SESSION['id'])) {
     </div>
 
 </nav>
+
+<?php if (isset($_SESSION['login_success'])) : ?>
+
+<div
+    id="loginToast"
+    class="
+        fixed
+        inset-0
+        bg-black/40
+        flex
+        items-center
+        justify-center
+        z-50
+    "
+>
+
+    <div class="
+        bg-white
+        p-10
+        rounded-3xl
+        shadow-2xl
+        text-center
+        max-w-md
+        w-full
+    ">
+
+        <h2 class="
+            text-3xl
+            font-bold
+            mb-3
+            font-display
+        ">
+            Bienvenido
+        </h2>
+
+        <p class="text-lg mb-2">
+            <?= htmlspecialchars($_SESSION['nombre']) ?>
+        </p>
+
+        <p class="text-gray-500">
+            Rol:
+            <?= $_SESSION['rol'] === 'admin'
+                ? 'Administrador'
+                : 'Usuario'
+            ?>
+        </p>
+
+    </div>
+
+</div>
+
+<script>
+
+setTimeout(() => {
+
+    document
+        .getElementById("loginToast")
+        ?.remove();
+
+}, 2200);
+
+</script>
+
+<?php unset($_SESSION['login_success']); ?>
+
+<?php endif; ?>
 
 <main class="max-w-7xl mx-auto p-6">

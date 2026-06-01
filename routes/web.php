@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 require_once "../app/controllers/AuthController.php";
 require_once "../app/controllers/ReservaController.php";
+require_once "../app/controllers/AdminController.php";
 
+// ======================
 // AUTH
+// ======================
 
 $router->get(
     '/',
@@ -35,7 +40,9 @@ $router->get(
     'AuthController@logout'
 );
 
+// ======================
 // RESERVAS
+// ======================
 
 $router->get(
     '/mis-reservas',
@@ -65,4 +72,13 @@ $router->post(
 $router->post(
     '/eliminar-reserva',
     'ReservaController@eliminar'
+);
+
+// ======================
+// ADMIN
+// ======================
+
+$router->get(
+    '/admin',
+    'AdminController@dashboard'
 );

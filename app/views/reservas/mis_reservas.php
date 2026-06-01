@@ -8,106 +8,139 @@ require_once "../app/views/layouts/header.php";
 
 ?>
 
-<h2 class="text-3xl font-bold mb-6">
+<h2 class="text-4xl font-bold mb-8 font-display">
     Mis Reservas
 </h2>
 
-<table class="w-full bg-white shadow rounded-xl overflow-hidden">
+<div
+    id="mensajeAjax"
+    class="mb-6"
+></div>
 
-    <thead class="bg-gray-200">
+<?php if ($reservas->num_rows > 0) : ?>
 
-        <tr>
-
-            <th class="p-3 text-left">
-                Fecha
-            </th>
-
-            <th class="p-3 text-left">
-                Horario
-            </th>
-
-            <th class="p-3 text-left">
-                Mesa
-            </th>
-
-            <th class="p-3 text-left">
-                Sala
-            </th>
-
-            <th class="p-3 text-left">
-                Biblioteca
-            </th>
-
-            <th class="p-3 text-left">
-                Acciones
-            </th>
-
-        </tr>
-
-    </thead>
-
-    <tbody>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
         <?php while ($r = $reservas->fetch_assoc()) : ?>
 
-            <tr
+            <div
                 id="fila-<?= (int)$r['id_reserva'] ?>"
-                class="border-t"
+                class="bg-white rounded-3xl shadow-xl p-6"
             >
 
-                <td class="p-3">
-                    <?= htmlspecialchars($r['fecha_r']) ?>
-                </td>
+                <div class="flex justify-between items-start mb-5">
 
-                <td class="p-3">
+                    <div>
 
-                    <?= htmlspecialchars($r['hora_inicio']) ?>
+                        <h3 class="text-2xl font-bold font-display">
 
-                    -
+                            Mesa <?= (int)$r['numero'] ?>
 
-                    <?= htmlspecialchars($r['hora_fin']) ?>
+                        </h3>
 
-                </td>
+                        <p class="text-gray-500">
+                            <?= htmlspecialchars($r['nombre_s']) ?>
+                        </p>
 
-                <td class="p-3">
-                    Mesa <?= (int)$r['numero'] ?>
-                </td>
+                    </div>
 
-                <td class="p-3">
-                    <?= htmlspecialchars($r['nombre_s']) ?>
-                </td>
+                    <span class="
+                        bg-blue-100
+                        text-blue-700
+                        px-4
+                        py-2
+                        rounded-xl
+                        text-sm
+                        font-medium
+                    ">
+                        <?= htmlspecialchars($r['fecha_r']) ?>
+                    </span>
 
-                <td class="p-3">
-                    <?= htmlspecialchars($r['nombre_b']) ?>
-                </td>
+                </div>
 
-                <td class="p-3 flex gap-4">
+                <div class="space-y-3 text-gray-700">
+
+                    <p>
+
+                        <span class="font-semibold">
+                            Biblioteca:
+                        </span>
+
+                        <?= htmlspecialchars($r['nombre_b']) ?>
+
+                    </p>
+
+                    <p>
+
+                        <span class="font-semibold">
+                            Horario:
+                        </span>
+
+                        <?= substr($r['hora_inicio'], 0, 5) ?>
+
+                        -
+
+                        <?= substr($r['hora_fin'], 0, 5) ?>
+
+                    </p>
+
+                </div>
+
+                <div class="flex gap-4 mt-8">
 
                     <a
                         href="/studyspace/public/editar-reserva?id=<?= (int)$r['id_reserva'] ?>"
-                        class="text-blue-600 hover:underline"
+                        class="
+                        flex-1
+                        text-center
+                        bg-blue-600
+                        text-white
+                        py-3
+                        rounded-2xl
+                        font-medium
+                        "
                     >
                         Editar
                     </a>
 
                     <button
-                        class="text-red-600 btnEliminar"
+                        class="
+                        flex-1
+                        bg-red-500
+                        text-white
+                        py-3
+                        rounded-2xl
+                        font-medium
+                        btnEliminar
+                        "
                         data-id="<?= (int)$r['id_reserva'] ?>"
                     >
                         Eliminar
                     </button>
 
-                </td>
+                </div>
 
-            </tr>
+            </div>
 
         <?php endwhile; ?>
 
-    </tbody>
+    </div>
 
-</table>
+<?php else : ?>
 
-<div id="mensajeAjax" class="mt-4"></div>
+    <div class="bg-white p-10 rounded-3xl shadow-xl text-center">
+
+        <h3 class="text-2xl font-bold mb-3 font-display">
+            No tienes reservas
+        </h3>
+
+        <p class="text-gray-600">
+            Todavía no has realizado ninguna reserva.
+        </p>
+
+    </div>
+
+<?php endif; ?>
 
 <script src="/studyspace/resources/js/reservas.js"></script>
 

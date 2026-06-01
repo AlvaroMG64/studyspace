@@ -2,133 +2,361 @@
 
 declare(strict_types=1);
 
-/** @var array $reserva */
-
 require_once "../app/views/layouts/header.php";
 
+/*
+|--------------------------------------------------------------------------
+| EVITAR VARIABLES NO DEFINIDAS
+|--------------------------------------------------------------------------
+*/
+
+if (!isset($reserva)) {
+    $reserva = [];
+}
+
+if (!isset($bibliotecas)) {
+    $bibliotecas = [];
+}
+
+/*
+|--------------------------------------------------------------------------
+| VALORES POR DEFECTO
+|--------------------------------------------------------------------------
+*/
+
+$idReserva =
+    $reserva['id_reserva'] ?? 0;
+
+$idMesa =
+    $reserva['id_mesa'] ?? 0;
+
+$numeroMesa =
+    $reserva['numero'] ?? '';
+
+$fecha =
+    $reserva['fecha_r'] ?? '';
+
+$horaInicio =
+    isset($reserva['hora_inicio'])
+        ? substr((string)$reserva['hora_inicio'], 0, 5)
+        : '';
+
+$horaFin =
+    isset($reserva['hora_fin'])
+        ? substr((string)$reserva['hora_fin'], 0, 5)
+        : '';
 ?>
 
-<div class="flex justify-center">
+<div class="flex justify-center items-center min-h-[80vh]">
 
-    <div class="w-full max-w-3xl">
+    <div class="
+        bg-white
+        w-full
+        max-w-6xl
+        rounded-3xl
+        shadow-2xl
+        p-10
+    ">
 
-        <h2 class="text-4xl font-bold mb-8 text-center">
-            Editar Reserva
-        </h2>
+        <!-- TITULO -->
+
+        <div class="mb-8 text-center">
+
+            <h1 class="
+                text-4xl
+                font-bold
+                font-display
+                mb-2
+            ">
+                Editar reserva
+            </h1>
+
+            <p class="text-gray-500">
+                Modifica los datos de la reserva
+            </p>
+
+        </div>
+
+        <!-- MENSAJES -->
+
+        <div
+            id="mensajeAjax"
+            class="mb-6"
+        ></div>
+
+        <!-- FORMULARIO -->
 
         <form
             id="formEditar"
-            class="bg-white p-8 rounded-3xl shadow-xl"
+            class="space-y-8"
         >
-
-            <div
-                id="mensajeAjax"
-                class="mb-6"
-            ></div>
 
             <input
                 type="hidden"
                 name="id"
-                value="<?= (int)$reserva['id_reserva'] ?>"
+                value="<?= htmlspecialchars((string)$idReserva) ?>"
             >
 
-            <input
-                type="hidden"
-                name="mesa"
-                value="<?= (int)$reserva['id_mesa'] ?>"
-            >
+            <!-- FILA 1 -->
 
-            <div class="bg-blue-50 border border-blue-200 p-5 rounded-2xl mb-8">
+            <div class="
+                grid
+                grid-cols-1
+                md:grid-cols-3
+                gap-6
+            ">
 
-                <p class="mb-2">
-                    <span class="font-semibold">Biblioteca:</span>
-                    <?= htmlspecialchars($reserva['nombre_b']) ?>
-                </p>
-
-                <p class="mb-2">
-                    <span class="font-semibold">Sala:</span>
-                    <?= htmlspecialchars($reserva['nombre_s']) ?>
-                </p>
-
-                <p>
-                    <span class="font-semibold">Mesa:</span>
-                    <?= (int)$reserva['numero'] ?>
-                </p>
-
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- BIBLIOTECA -->
 
                 <div>
 
-                    <label class="font-semibold block mb-2">
+                    <label class="
+                        block
+                        mb-2
+                        font-medium
+                    ">
+                        Biblioteca
+                    </label>
+
+                    <select
+                        id="biblioteca"
+                        class="
+                            w-full
+                            border
+                            rounded-2xl
+                            p-4
+                        "
+                    >
+
+                        <option value="">
+                            Seleccionar biblioteca
+                        </option>
+
+                        <?php foreach ($bibliotecas as $biblioteca): ?>
+
+                            <option
+                                value="<?= htmlspecialchars((string)$biblioteca['id_biblioteca']) ?>"
+                            >
+                                <?= htmlspecialchars((string)$biblioteca['nombre_b']) ?>
+                            </option>
+
+                        <?php endforeach; ?>
+
+                    </select>
+
+                </div>
+
+                <!-- SALA -->
+
+                <div>
+
+                    <label class="
+                        block
+                        mb-2
+                        font-medium
+                    ">
+                        Sala
+                    </label>
+
+                    <select
+                        id="sala"
+                        class="
+                            w-full
+                            border
+                            rounded-2xl
+                            p-4
+                        "
+                    >
+
+                        <option value="">
+                            Seleccionar sala
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- MESA -->
+
+                <div>
+
+                    <label class="
+                        block
+                        mb-2
+                        font-medium
+                    ">
+                        Mesa
+                    </label>
+
+                    <select
+                        id="mesa"
+                        name="mesa"
+                        class="
+                            w-full
+                            border
+                            rounded-2xl
+                            p-4
+                        "
+                    >
+
+                        <?php if ($idMesa): ?>
+
+                            <option
+                                value="<?= htmlspecialchars((string)$idMesa) ?>"
+                                selected
+                            >
+                                Mesa
+                                <?= htmlspecialchars((string)$numeroMesa) ?>
+                            </option>
+
+                        <?php else: ?>
+
+                            <option value="">
+                                Seleccionar mesa
+                            </option>
+
+                        <?php endif; ?>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <!-- FILA 2 -->
+
+            <div class="
+                grid
+                grid-cols-1
+                md:grid-cols-2
+                gap-6
+            ">
+
+                <!-- FECHA -->
+
+                <div>
+
+                    <label class="
+                        block
+                        mb-2
+                        font-medium
+                    ">
                         Fecha
                     </label>
 
                     <input
                         type="date"
                         name="fecha"
-                        value="<?= htmlspecialchars($reserva['fecha_r']) ?>"
-                        min="<?= date('Y-m-d') ?>"
-                        required
-                        class="w-full p-3 border rounded-xl"
+                        value="<?= htmlspecialchars((string)$fecha) ?>"
+                        class="
+                            w-full
+                            border
+                            rounded-2xl
+                            p-4
+                        "
                     >
 
                 </div>
 
-                <div>
+                <!-- HORAS -->
 
-                    <label class="font-semibold block mb-2">
-                        Hora inicio
-                    </label>
+                <div class="grid grid-cols-2 gap-4">
 
-                    <input
-                        type="time"
-                        name="inicio"
-                        value="<?= substr($reserva['hora_inicio'], 0, 5) ?>"
-                        required
-                        class="w-full p-3 border rounded-xl"
-                    >
+                    <!-- INICIO -->
 
-                </div>
+                    <div>
 
-                <div>
+                        <label class="
+                            block
+                            mb-2
+                            font-medium
+                        ">
+                            Hora inicio
+                        </label>
 
-                    <label class="font-semibold block mb-2">
-                        Hora fin
-                    </label>
+                        <input
+                            type="time"
+                            name="inicio"
+                            value="<?= htmlspecialchars((string)$horaInicio) ?>"
+                            class="
+                                w-full
+                                border
+                                rounded-2xl
+                                p-4
+                            "
+                        >
 
-                    <input
-                        type="time"
-                        name="fin"
-                        value="<?= substr($reserva['hora_fin'], 0, 5) ?>"
-                        required
-                        class="w-full p-3 border rounded-xl"
-                    >
+                    </div>
+
+                    <!-- FIN -->
+
+                    <div>
+
+                        <label class="
+                            block
+                            mb-2
+                            font-medium
+                        ">
+                            Hora fin
+                        </label>
+
+                        <input
+                            type="time"
+                            name="fin"
+                            value="<?= htmlspecialchars((string)$horaFin) ?>"
+                            class="
+                                w-full
+                                border
+                                rounded-2xl
+                                p-4
+                            "
+                        >
+
+                    </div>
 
                 </div>
 
             </div>
 
-            <button
-                class="
-                mt-8
-                w-full
-                bg-gradient-to-r
-                from-indigo-500
-                to-blue-700
-                text-white
-                py-4
-                rounded-2xl
-                hover:scale-[1.01]
-                transition
-                shadow-lg
-                font-semibold
-                text-lg
-                "
-            >
-                Guardar cambios
-            </button>
+            <!-- BOTONES -->
+
+            <div class="
+                flex
+                justify-center
+                gap-4
+                pt-4
+            ">
+
+                <a
+                    href="/studyspace/public/mis-reservas"
+                    class="
+                        px-8
+                        py-4
+                        rounded-2xl
+                        bg-gray-200
+                        hover:bg-gray-300
+                        transition
+                    "
+                >
+                    Cancelar
+                </a>
+
+                <button
+                    type="submit"
+                    class="
+                        px-8
+                        py-4
+                        rounded-2xl
+                        bg-blue-600
+                        text-white
+                        hover:bg-blue-700
+                        transition
+                    "
+                >
+                    Guardar cambios
+                </button>
+
+            </div>
 
         </form>
 
@@ -139,6 +367,5 @@ require_once "../app/views/layouts/header.php";
 <script src="/studyspace/resources/js/reservas.js"></script>
 
 <?php
-
 require_once "../app/views/layouts/footer.php";
 ?>
