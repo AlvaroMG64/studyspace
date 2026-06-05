@@ -2,34 +2,31 @@
 
 declare(strict_types=1);
 
-require_once "../config/database.php";
+require_once "../core/Model.php";
 
-class Reserva {
-
-    private mysqli $conn;
-
-    public function __construct() {
-
-        $this->conn = Database::connect();
-    }
-
+class Reserva extends Model
+{
     // =========================
     // RESERVAS USUARIO
     // =========================
 
     public function obtenerPorUsuario(
         int $idUsuario
-    ) {
+    ): mysqli_result {
 
-        $stmt = $this->conn->prepare("
+        $stmt = $this->db->prepare("
             SELECT
                 r.*,
+
                 m.numero,
                 m.id_mesa,
+
                 s.nombre_s,
                 s.id_sala,
+
                 b.nombre_b,
                 b.id_biblioteca
+
             FROM reservas r
 
             JOIN mesas m
@@ -62,8 +59,8 @@ class Reserva {
     // TODAS LAS RESERVAS
     // =========================
 
-    public function obtenerTodas() {
-
+    public function obtenerTodas(): mysqli_result
+    {
         $sql = "
             SELECT
                 r.*,
@@ -98,19 +95,18 @@ class Reserva {
                 r.hora_inicio ASC
         ";
 
-        return $this->conn
-            ->query($sql);
+        return $this->db->query($sql);
     }
 
     // =========================
-    // OBTENER RESERVA
+    // OBTENER POR ID
     // =========================
 
     public function obtenerPorId(
         int $id
     ): ?array {
 
-        $stmt = $this->conn->prepare("
+        $stmt = $this->db->prepare("
             SELECT
                 r.*,
 
@@ -164,7 +160,7 @@ class Reserva {
         int $mesa
     ): bool {
 
-        $stmt = $this->conn->prepare("
+        $stmt = $this->db->prepare("
             INSERT INTO reservas
             (
                 fecha_r,
@@ -200,7 +196,7 @@ class Reserva {
         int $mesa
     ): bool {
 
-        $stmt = $this->conn->prepare("
+        $stmt = $this->db->prepare("
             UPDATE reservas
 
             SET
@@ -232,7 +228,7 @@ class Reserva {
         int $id
     ): bool {
 
-        $stmt = $this->conn->prepare("
+        $stmt = $this->db->prepare("
             DELETE FROM reservas
             WHERE id_reserva = ?
         ");
@@ -259,27 +255,19 @@ class Reserva {
 
         $sql = "
             SELECT id_reserva
-
             FROM reservas
-
             WHERE id_mesa = ?
             AND fecha_r = ?
 
-            AND NOT (
-                hora_fin <= ?
-                OR hora_inicio >= ?
-            )
+            AND hora_inicio < ?
+            AND hora_fin > ?
         ";
 
         if ($ignorar !== null) {
-
-            $sql .= "
-                AND id_reserva != ?
-            ";
+            $sql .= " AND id_reserva != ? ";
         }
 
-        $stmt =
-            $this->conn->prepare($sql);
+        $stmt = $this->db->prepare($sql);
 
         if ($ignorar !== null) {
 
@@ -287,8 +275,8 @@ class Reserva {
                 "isssi",
                 $mesa,
                 $fecha,
-                $inicio,
                 $fin,
+                $inicio,
                 $ignorar
             );
 
@@ -298,8 +286,8 @@ class Reserva {
                 "isss",
                 $mesa,
                 $fecha,
-                $inicio,
-                $fin
+                $fin,
+                $inicio
             );
         }
 
@@ -324,27 +312,19 @@ class Reserva {
 
         $sql = "
             SELECT id_reserva
-
             FROM reservas
-
             WHERE id_usuario = ?
             AND fecha_r = ?
 
-            AND NOT (
-                hora_fin <= ?
-                OR hora_inicio >= ?
-            )
+            AND hora_inicio < ?
+            AND hora_fin > ?
         ";
 
         if ($ignorar !== null) {
-
-            $sql .= "
-                AND id_reserva != ?
-            ";
+            $sql .= " AND id_reserva != ? ";
         }
 
-        $stmt =
-            $this->conn->prepare($sql);
+        $stmt = $this->db->prepare($sql);
 
         if ($ignorar !== null) {
 
@@ -352,8 +332,8 @@ class Reserva {
                 "isssi",
                 $usuario,
                 $fecha,
-                $inicio,
                 $fin,
+                $inicio,
                 $ignorar
             );
 
@@ -363,8 +343,8 @@ class Reserva {
                 "isss",
                 $usuario,
                 $fecha,
-                $inicio,
-                $fin
+                $fin,
+                $inicio
             );
         }
 
@@ -373,70 +353,5 @@ class Reserva {
         return $stmt
             ->get_result()
             ->num_rows > 0;
-    }
-
-    // =========================
-    // STATS DASHBOARD
-    // =========================
-
-    public function totalReservas(): int {
-
-        $resultado =
-            $this->conn->query("
-                SELECT COUNT(*) AS total
-                FROM reservas
-            ");
-
-        return (int)
-            $resultado
-                ->fetch_assoc()['total'];
-    }
-
-    public function reservasHoy(): int {
-
-        $stmt = $this->conn->prepare("
-            SELECT COUNT(*) AS total
-            FROM reservas
-            WHERE fecha_r = CURDATE()
-        ");
-
-        $stmt->execute();
-
-        return (int)
-            $stmt
-                ->get_result()
-                ->fetch_assoc()['total'];
-    }
-
-    // =========================
-    // GRÁFICA
-    // =========================
-
-    public function graficaReservas(): array {
-
-        $resultado =
-            $this->conn->query("
-                SELECT
-                    fecha_r,
-                    COUNT(*) AS total
-
-                FROM reservas
-
-                GROUP BY fecha_r
-
-                ORDER BY fecha_r ASC
-            ");
-
-        $datos = [];
-
-        while (
-            $fila =
-                $resultado->fetch_assoc()
-        ) {
-
-            $datos[] = $fila;
-        }
-
-        return $datos;
     }
 }

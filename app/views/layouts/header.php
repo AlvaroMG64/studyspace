@@ -2,12 +2,6 @@
 
 declare(strict_types=1);
 
-if (!isset($_SESSION['id'])) {
-
-    header("Location: /studyspace/public/login");
-    exit;
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -64,6 +58,8 @@ if (!isset($_SESSION['id'])) {
 
 <body class="bg-gray-100 min-h-screen">
 
+<?php if (isset($_SESSION['id'])) : ?>
+
 <nav class="bg-blue-700 text-white p-4 shadow-lg">
 
     <div class="max-w-7xl mx-auto flex justify-between items-center">
@@ -95,6 +91,20 @@ if (!isset($_SESSION['id'])) {
                 Crear reserva
             </a>
 
+            <?php if (
+                isset($_SESSION['rol'])
+                && $_SESSION['rol'] === 'admin'
+            ) : ?>
+
+            <a
+                href="/studyspace/public/admin"
+                class="hover:underline"
+            >
+                Panel admin
+            </a>
+
+            <?php endif; ?>
+
             <a
                 href="/studyspace/public/logout"
                 onclick="return confirmarLogout(event)"
@@ -108,6 +118,8 @@ if (!isset($_SESSION['id'])) {
     </div>
 
 </nav>
+
+<?php endif; ?>
 
 <?php if (isset($_SESSION['login_success'])) : ?>
 

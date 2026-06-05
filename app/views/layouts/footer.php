@@ -91,5 +91,7 @@
 
 </script>
 
+<script src="/studyspace/resources/js/notifications.js"></script>
+
 </body>
 </html>

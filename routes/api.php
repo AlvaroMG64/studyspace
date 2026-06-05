@@ -1,9 +1,18 @@
 <?php
 
-require_once "../app/controllers/ApiController.php";
+declare(strict_types=1);
 
-$router->get('/api/salas', 'ApiController@salas');
-$router->get('/api/mesas', 'ApiController@mesas');
-$router->get('/api/stats', 'ApiController@stats');
+$router->get(
+    "/api/stats",
+    "ApiController@stats"
+);
 
-$router->post('/api/eliminar-reserva', 'ReservaController@eliminar');
+$router->get(
+    "/api/salas",
+    "SalaController@obtenerPorBiblioteca"
+);
+
+$router->get(
+    "/api/mesas",
+    "MesaController@obtenerPorSala"
+);

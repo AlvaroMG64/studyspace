@@ -2,33 +2,27 @@
 
 declare(strict_types=1);
 
-require_once "../core/Controller.php";
+require_once "../core/BaseController.php";
 
-require_once "../app/models/Reserva.php";
+require_once "../app/services/DashboardService.php";
 
-class AdminController extends Controller {
+class AdminController extends BaseController {
+
+    private DashboardService $dashboardService;
+
+    public function __construct()
+    {
+        $this->requireAdmin();
+
+        $this->dashboardService =
+            new DashboardService();
+    }
 
     public function dashboard(): void
     {
-        if (
-            !isset($_SESSION['rol'])
-            || $_SESSION['rol'] !== 'admin'
-        ) {
-
-            header(
-                "Location: /studyspace/public/"
-            );
-
-            exit;
-        }
-
-        $reservaModel =
-            new Reserva();
-
         $reservas =
-            $reservaModel
-                ->obtenerTodas()
-                ->fetch_all(MYSQLI_ASSOC);
+            $this->dashboardService
+                ->obtenerReservas();
 
         $this->view(
             "dashboard/admin",

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ .
-    "/../config/database.php";
+require_once "../config/database.php";
 
-class Model {
-
+abstract class Model
+{
     protected mysqli $db;
 
-    public function __construct() {
-
-        $this->db = Database::connect();
+    public function __construct()
+    {
+        $this->db =
+            Database::connect();
     }
 }

@@ -2,24 +2,22 @@
 
 declare(strict_types=1);
 
-require_once "../config/database.php";
+require_once "../core/Model.php";
 
-class Biblioteca {
-
-    private mysqli $conn;
-
-    public function __construct() {
-
-        $this->conn =
-            Database::connect();
-    }
+class Biblioteca extends Model
+{
+    // =========================
+    // OBTENER TODAS
+    // =========================
 
     public function obtenerTodas(): mysqli_result
     {
-        return $this->conn->query("
+        $sql = "
             SELECT *
             FROM bibliotecas
             ORDER BY nombre_b ASC
-        ");
+        ";
+
+        return $this->db->query($sql);
     }
 }
