@@ -1,391 +1,360 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     inicializarDashboard();
-
     inicializarEliminar();
-
     inicializarFiltros();
+    cargarTree();
 
 });
 
-// =====================================
+// =========================
 // DASHBOARD
-// =====================================
+// =========================
 
 function inicializarDashboard() {
 
-    const totalReservas =
-        document.querySelectorAll(".filaReserva").length;
+    const filas = document.querySelectorAll(".filaReserva");
 
-    const totalUsuarios =
-        new Set(
-            Array.from(
-                document.querySelectorAll(".filaReserva")
-            ).map(
-                fila => fila.dataset.usuario
-            )
-        ).size;
+    const totalReservas = document.getElementById("totalReservas");
+    const totalUsuarios = document.getElementById("totalUsuarios");
+    const totalMesas = document.getElementById("totalMesas");
+    const reservasHoy = document.getElementById("reservasHoy");
 
-    const totalMesas =
-        new Set(
-            Array.from(
-                document.querySelectorAll(".filaReserva")
-            ).map(
-                fila => fila.dataset.mesa
-            )
-        ).size;
+    if (!totalReservas || !totalUsuarios || !totalMesas || !reservasHoy) {
+        return;
+    }
 
-    const hoy =
-        new Date()
-            .toISOString()
-            .split("T")[0];
+    totalReservas.innerText = filas.length;
 
-    const reservasHoy =
-        Array.from(
-            document.querySelectorAll(".filaReserva")
-        ).filter(
-            fila => fila.dataset.fecha === hoy
-        ).length;
+    totalUsuarios.innerText =
+        new Set([...filas].map(f => f.dataset.usuario)).size;
 
-    // CARDS
+    totalMesas.innerText =
+        new Set([...filas].map(f => f.dataset.mesa)).size;
 
-    document.getElementById(
-        "totalReservas"
-    ).innerText = totalReservas;
+    const hoy = new Date().toISOString().split("T")[0];
 
-    document.getElementById(
-        "totalUsuarios"
-    ).innerText = totalUsuarios;
-
-    document.getElementById(
-        "totalMesas"
-    ).innerText = totalMesas;
-
-    document.getElementById(
-        "reservasHoy"
-    ).innerText = reservasHoy;
-
-    // GRAFICA
+    reservasHoy.innerText =
+        [...filas].filter(f => f.dataset.fecha === hoy).length;
 
     generarGrafica();
 }
 
-// =====================================
-// GRAFICA
-// =====================================
+// =========================
+// ELIMINAR
+// =========================
+
+function inicializarEliminar() {
+
+    document.querySelectorAll(".btnEliminar").forEach(btn => {
+
+        btn.onclick = (e) => {
+
+            e.preventDefault();
+            e.stopPropagation(); 
+
+            showConfirm(
+                "¿Seguro que deseas eliminar esta reserva?",
+                async () => {
+
+                    const form = new FormData();
+                    form.append("id", btn.dataset.id);
+
+                    try {
+
+                        const res = await fetch(
+                            "/studyspace/public/eliminar-reserva",
+                            {
+                                method: "POST",
+                                body: form
+                            }
+                        );
+
+                        const data = await res.json();
+
+                        if (data.success) {
+
+                            document
+                                .getElementById(`fila-${btn.dataset.id}`)
+                                ?.remove();
+
+                            showToast("success", "Reserva eliminada");
+
+                        } else {
+
+                            showToast("error", data.message);
+                        }
+
+                    } catch (e) {
+                        showToast("error", "Error de conexión");
+                    }
+                }
+            );
+        };
+    });
+}
+
+// =========================
+// FILTROS
+// =========================
+
+function inicializarFiltros() {
+
+    const u =
+        document.getElementById("filtroUsuario");
+
+    const f =
+        document.getElementById("filtroFecha");
+
+    const b =
+        document.getElementById("filtroBiblioteca");
+
+    const reset =
+        document.getElementById("btnLimpiarFiltros");
+
+    if (!u || !f || !b || !reset) {
+        return;
+    }
+
+    const aplicar = () => {
+
+        document.querySelectorAll(".filaReserva").forEach(row => {
+
+            const ok =
+                row.dataset.usuario
+                    .toLowerCase()
+                    .includes(u.value.toLowerCase())
+
+                &&
+
+                (!f.value || row.dataset.fecha === f.value)
+
+                &&
+
+                row.dataset.biblioteca
+                    .toLowerCase()
+                    .includes(b.value.toLowerCase());
+
+            row.style.display =
+                ok ? "" : "none";
+        });
+    };
+
+    u.oninput = aplicar;
+    f.onchange = aplicar;
+    b.oninput = aplicar;
+
+    reset.onclick = () => {
+
+        u.value = "";
+        f.value = "";
+        b.value = "";
+
+        aplicar();
+    };
+}
+
+// =========================
+// TREE
+// =========================
+
+async function cargarTree() {
+
+    const container =
+        document.getElementById("studyspaceTree");
+
+    if (!container) {
+        return;
+    }
+
+    try {
+
+        const res = await fetch(
+            "/studyspace/public/api/bibliotecas-tree"
+        );
+
+        const data = await res.json();
+
+        if (!Array.isArray(data)) {
+
+            container.innerHTML = `
+                <p class="text-red-600">
+                    Error cargando estructura
+                </p>
+            `;
+
+            return;
+        }
+
+        container.innerHTML = "";
+
+        data.forEach(biblioteca => {
+
+            const card =
+                document.createElement("div");
+
+            card.className = `
+                border
+                rounded-3xl
+                p-6
+                bg-gray-50
+            `;
+
+            let html = `
+                <h3 class="
+                    text-2xl
+                    font-bold
+                    mb-4
+                    text-blue-700
+                ">
+                    ${biblioteca.nombre}
+                </h3>
+            `;
+
+            biblioteca.salas.forEach(sala => {
+
+                html += `
+                    <div class="mb-4">
+
+                        <h4 class="
+                            font-semibold
+                            text-lg
+                            mb-2
+                        ">
+                            ${sala.nombre}
+                        </h4>
+
+                        <div class="
+                            flex
+                            flex-wrap
+                            gap-2
+                        ">
+                `;
+
+                sala.mesas.forEach(mesa => {
+
+                    html += `
+                        <span class="
+                            bg-white
+                            border
+                            px-3
+                            py-1
+                            rounded-xl
+                            text-sm
+                        ">
+                            Mesa ${mesa.numero}
+                        </span>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+
+            card.innerHTML = html;
+
+            container.appendChild(card);
+        });
+
+    } catch (e) {
+
+        console.error(e);
+
+        container.innerHTML = `
+            <p class="text-red-600">
+                Error cargando estructura
+            </p>
+        `;
+    }
+}
+
+// =========================
+// GRÁFICA
+// =========================
 
 function generarGrafica() {
 
     const filas =
         document.querySelectorAll(".filaReserva");
 
-    const reservasPorFecha = {};
+    const map = {};
 
-    filas.forEach(fila => {
+    filas.forEach(f => {
 
-        const fecha =
-            fila.dataset.fecha;
-
-        if (!reservasPorFecha[fecha]) {
-
-            reservasPorFecha[fecha] = 0;
-        }
-
-        reservasPorFecha[fecha]++;
+        map[f.dataset.fecha] =
+            (map[f.dataset.fecha] || 0) + 1;
     });
 
-    const labels =
-        Object.keys(reservasPorFecha);
+    const ctx =
+        document.getElementById("graficaReservas");
 
-    const datos =
-        Object.values(reservasPorFecha);
+    if (!ctx) return;
 
-    const canvas =
-        document.getElementById(
-            "graficaReservas"
-        );
-
-    if (!canvas) return;
-
-    new Chart(canvas, {
-
+    new Chart(ctx, {
         type: "bar",
 
         data: {
+            labels: Object.keys(map),
 
-            labels,
-
-            datasets: [
-                {
-                    label: "Reservas",
-                    data: datos,
-                    borderWidth: 2
-                }
-            ]
-        },
-
-        options: {
-
-            responsive: true,
-
-            plugins: {
-
-                legend: {
-                    display: false
-                }
-            }
+            datasets: [{
+                label: "Reservas",
+                data: Object.values(map),
+                borderWidth: 2
+            }]
         }
     });
 }
 
-// =====================================
-// FILTROS
-// =====================================
+async function refrescarDashboard() {
 
-function inicializarFiltros() {
+    try {
 
-    const filtroUsuario =
-        document.getElementById(
-            "filtroUsuario"
-        );
+        const res = await fetch("/studyspace/public/api/dashboard");
+        const data = await res.json();
 
-    const filtroFecha =
-        document.getElementById(
-            "filtroFecha"
-        );
+        document.getElementById("totalReservas").innerText =
+            data.totalReservas ?? 0;
 
-    function aplicarFiltros() {
+        document.getElementById("totalUsuarios").innerText =
+            data.totalUsuarios ?? 0;
 
-        const filas =
-            document.querySelectorAll(".filaReserva");
+        document.getElementById("totalMesas").innerText =
+            data.totalMesas ?? 0;
 
-        filas.forEach(fila => {
+        document.getElementById("reservasHoy").innerText =
+            data.reservasHoy ?? 0;
 
-            const usuario =
-                fila.dataset.usuario.toLowerCase();
+    } catch (e) {
 
-            const fecha =
-                fila.dataset.fecha;
-
-            const coincideUsuario =
-                usuario.includes(
-                    filtroUsuario.value.toLowerCase()
-                );
-
-            const coincideFecha =
-                !filtroFecha.value
-                || fecha === filtroFecha.value;
-
-            fila.style.display =
-                coincideUsuario && coincideFecha
-                    ? ""
-                    : "none";
-        });
+        console.error("Error refrescando dashboard", e);
     }
-
-    filtroUsuario?.addEventListener(
-        "input",
-        aplicarFiltros
-    );
-
-    filtroFecha?.addEventListener(
-        "change",
-        aplicarFiltros
-    );
 }
 
-// =====================================
-// ELIMINAR
-// =====================================
+function recalcularDashboard() {
 
-function inicializarEliminar() {
+    const filas = document.querySelectorAll(".filaReserva");
 
-    const botones =
-        document.querySelectorAll(".btnEliminar");
+    const totalReservas = document.getElementById("totalReservas");
+    const totalUsuarios = document.getElementById("totalUsuarios");
+    const totalMesas = document.getElementById("totalMesas");
+    const reservasHoy = document.getElementById("reservasHoy");
 
-    botones.forEach(btn => {
+    if (!totalReservas) return;
 
-        btn.addEventListener(
-            "click",
-            () => {
+    totalReservas.innerText = filas.length;
 
-                abrirModalEliminar(
-                    btn.dataset.id
-                );
-            }
-        );
-    });
-}
+    totalUsuarios.innerText =
+        new Set([...filas].map(f => f.dataset.usuario)).size;
 
-function abrirModalEliminar(id) {
+    totalMesas.innerText =
+        new Set([...filas].map(f => f.dataset.mesa)).size;
 
-    const overlay =
-        document.createElement("div");
+    const hoy = new Date().toISOString().split("T")[0];
 
-    overlay.className = `
-        fixed inset-0
-        bg-black/40
-        flex items-center justify-center
-        z-50
-    `;
+    reservasHoy.innerText =
+        [...filas].filter(f => f.dataset.fecha === hoy).length;
 
-    overlay.innerHTML = `
-        <div class="
-            bg-white
-            rounded-3xl
-            shadow-2xl
-            p-8
-            w-full
-            max-w-md
-            text-center
-        ">
-
-            <h2 class="
-                text-2xl
-                font-bold
-                mb-4
-            ">
-                Eliminar reserva
-            </h2>
-
-            <p class="text-gray-600 mb-8">
-                ¿Seguro que deseas eliminar esta reserva?
-            </p>
-
-            <div class="flex gap-4">
-
-                <button
-                    class="
-                        cancelarEliminar
-                        flex-1
-                        py-3
-                        rounded-xl
-                        bg-gray-200
-                    "
-                >
-                    Cancelar
-                </button>
-
-                <button
-                    class="
-                        confirmarEliminar
-                        flex-1
-                        py-3
-                        rounded-xl
-                        bg-red-600
-                        text-white
-                    "
-                >
-                    Eliminar
-                </button>
-
-            </div>
-
-        </div>
-    `;
-
-    document.body.appendChild(overlay);
-
-    overlay
-        .querySelector(".cancelarEliminar")
-        .addEventListener(
-            "click",
-            () => {
-
-                overlay.remove();
-            }
-        );
-
-    overlay
-        .querySelector(".confirmarEliminar")
-        .addEventListener(
-            "click",
-            async () => {
-
-                const formData =
-                    new FormData();
-
-                formData.append("id", id);
-
-                const response =
-                    await fetch(
-                        "/studyspace/public/eliminar-reserva",
-                        {
-                            method: "POST",
-                            body: formData
-                        }
-                    );
-
-                const data =
-                    await response.json();
-
-                if (data.success) {
-
-                    const fila =
-                        document.getElementById(
-                            `fila-${id}`
-                        );
-
-                    if (fila) {
-
-                        fila.remove();
-                    }
-
-                    mostrarToast(
-                        "Reserva eliminada"
-                    );
-                }
-
-                overlay.remove();
-            }
-        );
-}
-
-// =====================================
-// TOAST
-// =====================================
-
-function mostrarToast(texto) {
-
-    const fondo =
-        document.createElement("div");
-
-    fondo.className = `
-        fixed inset-0
-        bg-white/60
-        backdrop-blur-sm
-        z-[9998]
-    `;
-
-    const toast =
-        document.createElement("div");
-
-    toast.className = `
-        fixed
-        top-1/2
-        left-1/2
-        -translate-x-1/2
-        -translate-y-1/2
-        bg-green-600
-        text-white
-        px-8
-        py-4
-        rounded-2xl
-        shadow-2xl
-        z-[9999]
-        text-lg
-        font-semibold
-    `;
-
-    toast.innerText = texto;
-
-    document.body.appendChild(fondo);
-    document.body.appendChild(toast);
-
-    setTimeout(() => {
-
-        fondo.remove();
-        toast.remove();
-
-    }, 1800);
+    generarGrafica();
 }

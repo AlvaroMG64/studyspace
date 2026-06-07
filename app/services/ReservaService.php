@@ -98,7 +98,7 @@ class ReservaService {
             return [
                 "success" => false,
                 "message" =>
-                    "Ya tienes una reserva en ese horario"
+                    "Ya existe una reserva en ese horario"
             ];
         }
 
@@ -237,7 +237,7 @@ class ReservaService {
             return [
                 "success" => false,
                 "message" =>
-                    "Ya tienes una reserva en ese horario"
+                    "Ya existe una reserva en ese horario"
             ];
         }
 
@@ -356,5 +356,24 @@ class ReservaService {
         return
             $rol === 'admin'
             || $reserva['id_usuario'] == $usuario;
+    }
+
+    public function obtenerReservaSegura(
+        int $id,
+        int $usuario,
+        string $rol
+    ): ?array {
+
+        $reserva = $this->reservaModel->obtenerPorId($id);
+
+        if (!$reserva) {
+            return null;
+        }
+
+        if ($rol !== 'admin' && $reserva['id_usuario'] != $usuario) {
+            return null;
+        }
+
+        return $reserva;
     }
 }

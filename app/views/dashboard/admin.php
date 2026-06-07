@@ -25,61 +25,66 @@ if (!isset($reservas)) {
 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
 
     <div class="bg-white p-6 rounded-3xl shadow-lg">
-
         <h2 class="text-gray-500 mb-2">
             Total reservas
         </h2>
 
-        <p
-            id="totalReservas"
-            class="text-4xl font-bold text-blue-700"
-        >
+        <p id="totalReservas"
+           class="text-5xl font-bold text-blue-700">
             0
         </p>
-
     </div>
 
     <div class="bg-white p-6 rounded-3xl shadow-lg">
-
         <h2 class="text-gray-500 mb-2">
             Usuarios
         </h2>
 
-        <p
-            id="totalUsuarios"
-            class="text-4xl font-bold text-green-700"
-        >
+        <p id="totalUsuarios"
+           class="text-5xl font-bold text-green-700">
             0
         </p>
-
     </div>
 
     <div class="bg-white p-6 rounded-3xl shadow-lg">
-
         <h2 class="text-gray-500 mb-2">
             Mesas
         </h2>
 
-        <p
-            id="totalMesas"
-            class="text-4xl font-bold text-indigo-700"
-        >
+        <p id="totalMesas"
+           class="text-5xl font-bold text-indigo-700">
             0
         </p>
-
     </div>
 
     <div class="bg-white p-6 rounded-3xl shadow-lg">
-
         <h2 class="text-gray-500 mb-2">
             Reservas hoy
         </h2>
 
-        <p
-            id="reservasHoy"
-            class="text-4xl font-bold text-red-700"
-        >
+        <p id="reservasHoy"
+           class="text-5xl font-bold text-red-700">
             0
+        </p>
+    </div>
+
+</div>
+
+<!-- TREE -->
+
+<div class="bg-white p-8 rounded-3xl shadow-lg mb-8">
+
+    <h2 class="text-3xl font-bold mb-6 font-display">
+        Estructura StudySpace
+    </h2>
+
+    <div
+        id="studyspaceTree"
+        class="grid grid-cols-1 lg:grid-cols-2 gap-6"
+    >
+
+        <p class="text-gray-500">
+            Cargando estructura...
         </p>
 
     </div>
@@ -112,32 +117,20 @@ if (!isset($reservas)) {
             type="text"
             id="filtroUsuario"
             placeholder="Buscar usuario"
-            class="
-                p-3
-                border
-                rounded-2xl
-            "
+            class="p-3 border rounded-2xl"
         >
 
         <input
             type="date"
             id="filtroFecha"
-            class="
-                p-3
-                border
-                rounded-2xl
-            "
+            class="p-3 border rounded-2xl"
         >
 
         <input
             type="text"
             id="filtroBiblioteca"
             placeholder="Buscar biblioteca"
-            class="
-                p-3
-                border
-                rounded-2xl
-            "
+            class="p-3 border rounded-2xl"
         >
 
         <button
@@ -161,26 +154,11 @@ if (!isset($reservas)) {
 
 <!-- TABLA -->
 
-<div class="
-    bg-white
-    p-6
-    rounded-3xl
-    shadow-lg
-    overflow-x-auto
-">
+<div class="bg-white p-6 rounded-3xl shadow-lg overflow-x-auto">
 
-    <div class="
-        flex
-        justify-between
-        items-center
-        mb-6
-    ">
+    <div class="flex justify-between items-center mb-6">
 
-        <h2 class="
-            text-2xl
-            font-bold
-            font-display
-        ">
+        <h2 class="text-2xl font-bold font-display">
             Gestión de reservas
         </h2>
 
@@ -207,171 +185,83 @@ if (!isset($reservas)) {
 
             <tr>
 
-                <th class="p-4 text-left">
-                    Usuario
-                </th>
-
-                <th class="p-4 text-left">
-                    Fecha
-                </th>
-
-                <th class="p-4 text-left">
-                    Horario
-                </th>
-
-                <th class="p-4 text-left">
-                    Biblioteca
-                </th>
-
-                <th class="p-4 text-left">
-                    Sala
-                </th>
-
-                <th class="p-4 text-left">
-                    Mesa
-                </th>
-
-                <th class="p-4 text-left">
-                    Acciones
-                </th>
+                <th class="p-4 text-left">Usuario</th>
+                <th class="p-4 text-left">Fecha</th>
+                <th class="p-4 text-left">Horario</th>
+                <th class="p-4 text-left">Biblioteca</th>
+                <th class="p-4 text-left">Sala</th>
+                <th class="p-4 text-left">Mesa</th>
+                <th class="p-4 text-left">Acciones</th>
 
             </tr>
 
         </thead>
 
-        <tbody id="tablaReservasAdmin">
+        <tbody>
 
-        <?php if (empty($reservas)): ?>
+        <?php foreach ($reservas as $reserva): ?>
 
-            <tr>
+            <tr
+                id="fila-<?= $reserva['id_reserva'] ?>"
+                class="border-t filaReserva"
 
-                <td
-                    colspan="7"
-                    class="
-                        p-6
-                        text-center
-                        text-gray-500
-                    "
-                >
-                    No hay reservas registradas
+                data-usuario="<?= htmlspecialchars((string)$reserva['nombre_u']) ?>"
+                data-fecha="<?= htmlspecialchars((string)$reserva['fecha_r']) ?>"
+                data-biblioteca="<?= htmlspecialchars((string)$reserva['nombre_b']) ?>"
+                data-mesa="<?= htmlspecialchars((string)$reserva['numero']) ?>"
+            >
+
+                <td class="p-4">
+                    <?= htmlspecialchars((string)$reserva['nombre_u']) ?>
+                </td>
+
+                <td class="p-4">
+                    <?= htmlspecialchars((string)$reserva['fecha_r']) ?>
+                </td>
+
+                <td class="p-4">
+                    <?= htmlspecialchars(substr((string)$reserva['hora_inicio'], 0, 5)) ?>
+                    -
+                    <?= htmlspecialchars(substr((string)$reserva['hora_fin'], 0, 5)) ?>
+                </td>
+
+                <td class="p-4">
+                    <?= htmlspecialchars((string)$reserva['nombre_b']) ?>
+                </td>
+
+                <td class="p-4">
+                    <?= htmlspecialchars((string)$reserva['nombre_s']) ?>
+                </td>
+
+                <td class="p-4">
+                    Mesa <?= htmlspecialchars((string)$reserva['numero']) ?>
+                </td>
+
+                <td class="p-4">
+
+                    <div class="flex gap-4">
+
+                        <a
+                            href="/studyspace/public/editar-reserva?id=<?= $reserva['id_reserva'] ?>"
+                            class="text-blue-600 hover:underline"
+                        >
+                            Editar
+                        </a>
+
+                        <button
+                            data-id="<?= $reserva['id_reserva'] ?>"
+                            class="btnEliminar text-red-600 hover:underline"
+                        >
+                            Eliminar
+                        </button>
+
+                    </div>
+
                 </td>
 
             </tr>
 
-        <?php else: ?>
-
-            <?php foreach ($reservas as $reserva): ?>
-
-                <tr
-                    id="fila-<?= $reserva['id_reserva'] ?>"
-                    class="border-t filaReserva"
-
-                    data-usuario="<?= htmlspecialchars((string)$reserva['nombre_u']) ?>"
-
-                    data-fecha="<?= htmlspecialchars((string)$reserva['fecha_r']) ?>"
-
-                    data-biblioteca="<?= htmlspecialchars((string)$reserva['nombre_b']) ?>"
-
-                    data-mesa="<?= htmlspecialchars((string)$reserva['numero']) ?>"
-                >
-
-                    <td class="p-4">
-
-                        <?= htmlspecialchars(
-                            (string)$reserva['nombre_u']
-                        ) ?>
-
-                    </td>
-
-                    <td class="p-4">
-
-                        <?= htmlspecialchars(
-                            (string)$reserva['fecha_r']
-                        ) ?>
-
-                    </td>
-
-                    <td class="p-4">
-
-                        <?= htmlspecialchars(
-                            substr(
-                                (string)$reserva['hora_inicio'],
-                                0,
-                                5
-                            )
-                        ) ?>
-
-                        -
-
-                        <?= htmlspecialchars(
-                            substr(
-                                (string)$reserva['hora_fin'],
-                                0,
-                                5
-                            )
-                        ) ?>
-
-                    </td>
-
-                    <td class="p-4">
-
-                        <?= htmlspecialchars(
-                            (string)$reserva['nombre_b']
-                        ) ?>
-
-                    </td>
-
-                    <td class="p-4">
-
-                        <?= htmlspecialchars(
-                            (string)$reserva['nombre_s']
-                        ) ?>
-
-                    </td>
-
-                    <td class="p-4">
-
-                        Mesa
-                        <?= htmlspecialchars(
-                            (string)$reserva['numero']
-                        ) ?>
-
-                    </td>
-
-                    <td class="p-4">
-
-                        <div class="flex gap-4">
-
-                            <a
-                                href="/studyspace/public/editar-reserva?id=<?= $reserva['id_reserva'] ?>"
-                                class="
-                                    text-blue-600
-                                    hover:underline
-                                "
-                            >
-                                Editar
-                            </a>
-
-                            <button
-                                data-id="<?= $reserva['id_reserva'] ?>"
-                                class="
-                                    btnEliminar
-                                    text-red-600
-                                    hover:underline
-                                "
-                            >
-                                Eliminar
-                            </button>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-            <?php endforeach; ?>
-
-        <?php endif; ?>
+        <?php endforeach; ?>
 
         </tbody>
 
@@ -382,8 +272,6 @@ if (!isset($reservas)) {
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script src="/studyspace/resources/js/dashboard.js"></script>
-
-<script src="/studyspace/resources/js/reservas.js"></script>
 
 <?php
 require_once "../app/views/layouts/footer.php";

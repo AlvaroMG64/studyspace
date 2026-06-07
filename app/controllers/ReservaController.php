@@ -25,8 +25,7 @@ class ReservaController extends BaseController
 
     public function misReservas(): void
     {
-        $reservas = $this->service
-            ->obtenerReservasUsuario($_SESSION['id']);
+        $reservas = $this->service->obtenerReservasUsuario($_SESSION['id']);
 
         $this->view("reservas/mis_reservas", [
             "reservas" => $reservas
@@ -39,9 +38,7 @@ class ReservaController extends BaseController
 
     public function crear(): void
     {
-        $bibliotecas = $this->bibliotecaModel
-            ->obtenerTodas()
-            ->fetch_all(MYSQLI_ASSOC);
+        $bibliotecas = $this->bibliotecaModel->obtenerTodas();
 
         $this->view("reservas/crear", [
             "bibliotecas" => $bibliotecas
@@ -60,7 +57,6 @@ class ReservaController extends BaseController
         $mesa = (int)($_POST['mesa'] ?? 0);
         $usuario = $_SESSION['id'];
 
-        // 🔴 VALIDACIÓN EXTRA (IMPORTANTE)
         if (!$mesa) {
             $this->json([
                 "success" => false,
@@ -81,30 +77,24 @@ class ReservaController extends BaseController
     }
 
     // =========================
-    // FORM EDITAR
+    // FORM EDITAR (FIX IMPORTANTE)
     // =========================
 
     public function editar(): void
     {
         $id = (int)($_GET['id'] ?? 0);
 
-        $reserva = $this->service->obtenerReserva($id);
-
-        if (!$reserva) {
-            die("Reserva no encontrada");
-        }
-
-        if (!$this->service->puedeGestionarReserva(
-            $reserva,
+        $reserva = $this->service->obtenerReservaSegura(
+            $id,
             $_SESSION['id'],
             $_SESSION['rol']
-        )) {
-            die("No autorizado");
+        );
+
+        if (!$reserva) {
+            die("No autorizado o reserva no encontrada");
         }
 
-        $bibliotecas = $this->bibliotecaModel
-            ->obtenerTodas()
-            ->fetch_all(MYSQLI_ASSOC);
+        $bibliotecas = $this->bibliotecaModel->obtenerTodas();
 
         $this->view("reservas/editar", [
             "reserva" => $reserva,
@@ -124,17 +114,14 @@ class ReservaController extends BaseController
         $fin = trim($_POST['fin'] ?? '');
         $mesa = (int)($_POST['mesa'] ?? 0);
 
-        $usuario = $_SESSION['id'];
-        $rol = $_SESSION['rol'];
-
         $resultado = $this->service->actualizarReserva(
             $id,
             $fecha,
             $inicio,
             $fin,
             $mesa,
-            $usuario,
-            $rol
+            $_SESSION['id'],
+            $_SESSION['rol']
         );
 
         $this->json($resultado);

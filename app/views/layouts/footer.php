@@ -1,97 +1,63 @@
 </main>
 
+<!-- UI SYSTEM GLOBAL -->
+<script src="/studyspace/resources/js/ui-system.js"></script>
+
+<!-- DASHBOARD -->
+<script src="/studyspace/resources/js/dashboard.js"></script>
+
+<!-- RESERVAS -->
+<script src="/studyspace/resources/js/reservas.js"></script>
+
 <script>
 
-    function confirmarLogout(event) {
+function confirmarLogout(event) {
 
-        event.preventDefault();
+    event.preventDefault();
 
-        const modal =
-            document.createElement("div");
+    showConfirm("¿Seguro que desea cerrar sesión?", () => {
+
+        const modal = document.createElement("div");
 
         modal.className = `
             fixed inset-0
             bg-black/40
+            backdrop-blur-sm
             flex items-center justify-center
-            z-50
+            z-[9999]
         `;
 
         modal.innerHTML = `
             <div class="
                 bg-white
-                p-8
+                p-10
                 rounded-3xl
                 shadow-2xl
                 text-center
                 max-w-md
                 w-full
             ">
-
-                <h2 class="
-                    text-2xl
-                    font-bold
-                    mb-4
-                    font-display
-                ">
-                    Cerrar sesión
+                <h2 class="text-3xl font-bold mb-3">
+                    Sesión cerrada
                 </h2>
 
-                <p class="mb-8 text-gray-600">
-                    ¿Seguro que deseas cerrar sesión?
+                <p class="text-gray-600">
+                    Se ha cerrado la sesión con éxito
                 </p>
-
-                <div class="flex gap-4">
-
-                    <button
-                        id="cancelLogout"
-                        class="
-                            flex-1
-                            py-3
-                            rounded-xl
-                            bg-gray-200
-                        "
-                    >
-                        Cancelar
-                    </button>
-
-                    <button
-                        id="confirmLogout"
-                        class="
-                            flex-1
-                            py-3
-                            rounded-xl
-                            bg-red-600
-                            text-white
-                        "
-                    >
-                        Salir
-                    </button>
-
-                </div>
-
             </div>
         `;
 
         document.body.appendChild(modal);
 
-        document
-            .getElementById("cancelLogout")
-            .onclick = () => modal.remove();
+        setTimeout(() => {
+            window.location.href = "/studyspace/public/logout";
+        }, 1200);
+    });
 
-        document
-            .getElementById("confirmLogout")
-            .onclick = () => {
-
-                window.location.href =
-                    "/studyspace/public/logout";
-            };
-
-        return false;
-    }
+    return false;
+}
 
 </script>
-
-<script src="/studyspace/resources/js/notifications.js"></script>
 
 </body>
 </html>

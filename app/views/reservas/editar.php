@@ -4,12 +4,6 @@ declare(strict_types=1);
 
 require_once "../app/views/layouts/header.php";
 
-/*
-|--------------------------------------------------------------------------
-| EVITAR VARIABLES NO DEFINIDAS
-|--------------------------------------------------------------------------
-*/
-
 if (!isset($reserva)) {
     $reserva = [];
 }
@@ -18,23 +12,12 @@ if (!isset($bibliotecas)) {
     $bibliotecas = [];
 }
 
-/*
-|--------------------------------------------------------------------------
-| VALORES POR DEFECTO
-|--------------------------------------------------------------------------
-*/
-
-$idReserva =
-    $reserva['id_reserva'] ?? 0;
-
-$idMesa =
-    $reserva['id_mesa'] ?? 0;
-
-$numeroMesa =
-    $reserva['numero'] ?? '';
-
-$fecha =
-    $reserva['fecha_r'] ?? '';
+$idBiblioteca = $reserva['id_biblioteca'] ?? 0;
+$idSala = $reserva['id_sala'] ?? 0;
+$idReserva = $reserva['id_reserva'] ?? 0;
+$idMesa = $reserva['id_mesa'] ?? 0;
+$numeroMesa = $reserva['numero'] ?? '';
+$fecha = $reserva['fecha_r'] ?? '';
 
 $horaInicio =
     isset($reserva['hora_inicio'])
@@ -49,25 +32,11 @@ $horaFin =
 
 <div class="flex justify-center items-center min-h-[80vh]">
 
-    <div class="
-        bg-white
-        w-full
-        max-w-6xl
-        rounded-3xl
-        shadow-2xl
-        p-10
-    ">
-
-        <!-- TITULO -->
+    <div class="bg-white w-full max-w-6xl rounded-3xl shadow-2xl p-10">
 
         <div class="mb-8 text-center">
 
-            <h1 class="
-                text-4xl
-                font-bold
-                font-display
-                mb-2
-            ">
+            <h1 class="text-4xl font-bold font-display mb-2">
                 Editar reserva
             </h1>
 
@@ -77,282 +46,118 @@ $horaFin =
 
         </div>
 
-        <!-- MENSAJES -->
+        <div id="mensajeAjax" class="mb-6"></div>
 
-        <div
-            id="mensajeAjax"
-            class="mb-6"
-        ></div>
+        <form id="formEditar" class="space-y-8">
 
-        <!-- FORMULARIO -->
-
-        <form
-            id="formEditar"
-            class="space-y-8"
-        >
-
-            <input
-                type="hidden"
-                name="id"
-                value="<?= htmlspecialchars((string)$idReserva) ?>"
-            >
+            <input type="hidden" name="id"
+                   value="<?= htmlspecialchars((string)$idReserva) ?>">
 
             <!-- FILA 1 -->
-
-            <div class="
-                grid
-                grid-cols-1
-                md:grid-cols-3
-                gap-6
-            ">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                 <!-- BIBLIOTECA -->
-
                 <div>
-
-                    <label class="
-                        block
-                        mb-2
-                        font-medium
-                    ">
-                        Biblioteca
-                    </label>
+                    <label class="block mb-2 font-medium">Biblioteca</label>
 
                     <select
                         id="biblioteca"
-                        class="
-                            w-full
-                            border
-                            rounded-2xl
-                            p-4
-                        "
-                    >
+                        class="w-full border rounded-2xl p-4">
 
-                        <option value="">
-                            Seleccionar biblioteca
-                        </option>
+                        <option value="">Seleccionar biblioteca</option>
 
                         <?php foreach ($bibliotecas as $biblioteca): ?>
 
                             <option
                                 value="<?= htmlspecialchars((string)$biblioteca['id_biblioteca']) ?>"
-                            >
+                                <?= $idBiblioteca == $biblioteca['id_biblioteca'] ? 'selected' : '' ?>>
                                 <?= htmlspecialchars((string)$biblioteca['nombre_b']) ?>
                             </option>
 
                         <?php endforeach; ?>
 
                     </select>
-
                 </div>
 
                 <!-- SALA -->
-
                 <div>
-
-                    <label class="
-                        block
-                        mb-2
-                        font-medium
-                    ">
-                        Sala
-                    </label>
+                    <label class="block mb-2 font-medium">Sala</label>
 
                     <select
                         id="sala"
-                        class="
-                            w-full
-                            border
-                            rounded-2xl
-                            p-4
-                        "
-                    >
+                        data-selected="<?= htmlspecialchars((string)$idSala) ?>"
+                        class="w-full border rounded-2xl p-4">
 
-                        <option value="">
-                            Seleccionar sala
-                        </option>
+                        <option value="">Seleccionar sala</option>
 
                     </select>
-
                 </div>
 
                 <!-- MESA -->
-
                 <div>
-
-                    <label class="
-                        block
-                        mb-2
-                        font-medium
-                    ">
-                        Mesa
-                    </label>
+                    <label class="block mb-2 font-medium">Mesa</label>
 
                     <select
                         id="mesa"
+                        data-selected="<?= htmlspecialchars((string)$idMesa) ?>"
                         name="mesa"
-                        class="
-                            w-full
-                            border
-                            rounded-2xl
-                            p-4
-                        "
-                    >
+                        class="w-full border rounded-2xl p-4">
 
                         <?php if ($idMesa): ?>
-
-                            <option
-                                value="<?= htmlspecialchars((string)$idMesa) ?>"
-                                selected
-                            >
-                                Mesa
-                                <?= htmlspecialchars((string)$numeroMesa) ?>
+                            <option value="<?= htmlspecialchars((string)$idMesa) ?>" selected>
+                                Mesa <?= htmlspecialchars((string)$numeroMesa) ?>
                             </option>
-
                         <?php else: ?>
-
-                            <option value="">
-                                Seleccionar mesa
-                            </option>
-
+                            <option value="">Seleccionar mesa</option>
                         <?php endif; ?>
 
                     </select>
-
                 </div>
 
             </div>
 
             <!-- FILA 2 -->
-
-            <div class="
-                grid
-                grid-cols-1
-                md:grid-cols-2
-                gap-6
-            ">
-
-                <!-- FECHA -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 <div>
+                    <label class="block mb-2 font-medium">Fecha</label>
 
-                    <label class="
-                        block
-                        mb-2
-                        font-medium
-                    ">
-                        Fecha
-                    </label>
-
-                    <input
-                        type="date"
-                        name="fecha"
-                        value="<?= htmlspecialchars((string)$fecha) ?>"
-                        class="
-                            w-full
-                            border
-                            rounded-2xl
-                            p-4
-                        "
-                    >
-
+                    <input type="date" name="fecha"
+                           value="<?= htmlspecialchars((string)$fecha) ?>"
+                           class="w-full border rounded-2xl p-4">
                 </div>
-
-                <!-- HORAS -->
 
                 <div class="grid grid-cols-2 gap-4">
 
-                    <!-- INICIO -->
-
                     <div>
+                        <label class="block mb-2 font-medium">Hora inicio</label>
 
-                        <label class="
-                            block
-                            mb-2
-                            font-medium
-                        ">
-                            Hora inicio
-                        </label>
-
-                        <input
-                            type="time"
-                            name="inicio"
-                            value="<?= htmlspecialchars((string)$horaInicio) ?>"
-                            class="
-                                w-full
-                                border
-                                rounded-2xl
-                                p-4
-                            "
-                        >
-
+                        <input type="time" name="inicio"
+                               value="<?= htmlspecialchars((string)$horaInicio) ?>"
+                               class="w-full border rounded-2xl p-4">
                     </div>
 
-                    <!-- FIN -->
-
                     <div>
+                        <label class="block mb-2 font-medium">Hora fin</label>
 
-                        <label class="
-                            block
-                            mb-2
-                            font-medium
-                        ">
-                            Hora fin
-                        </label>
-
-                        <input
-                            type="time"
-                            name="fin"
-                            value="<?= htmlspecialchars((string)$horaFin) ?>"
-                            class="
-                                w-full
-                                border
-                                rounded-2xl
-                                p-4
-                            "
-                        >
-
+                        <input type="time" name="fin"
+                               value="<?= htmlspecialchars((string)$horaFin) ?>"
+                               class="w-full border rounded-2xl p-4">
                     </div>
 
                 </div>
 
             </div>
 
-            <!-- BOTONES -->
+            <div class="flex justify-center gap-4 pt-4">
 
-            <div class="
-                flex
-                justify-center
-                gap-4
-                pt-4
-            ">
-
-                <a
-                    href="/studyspace/public/mis-reservas"
-                    class="
-                        px-8
-                        py-4
-                        rounded-2xl
-                        bg-gray-200
-                        hover:bg-gray-300
-                        transition
-                    "
-                >
+                <a href="/studyspace/public/mis-reservas"
+                   class="px-8 py-4 rounded-2xl bg-gray-200 hover:bg-gray-300 transition">
                     Cancelar
                 </a>
 
-                <button
-                    type="submit"
-                    class="
-                        px-8
-                        py-4
-                        rounded-2xl
-                        bg-blue-600
-                        text-white
-                        hover:bg-blue-700
-                        transition
-                    "
-                >
+                <button type="submit"
+                        class="px-8 py-4 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 transition">
                     Guardar cambios
                 </button>
 
@@ -361,11 +166,6 @@ $horaFin =
         </form>
 
     </div>
-
 </div>
 
-<script src="/studyspace/resources/js/reservas.js"></script>
-
-<?php
-require_once "../app/views/layouts/footer.php";
-?>
+<?php require_once "../app/views/layouts/footer.php"; ?>
