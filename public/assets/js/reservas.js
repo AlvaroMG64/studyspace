@@ -1,3 +1,6 @@
+const api = (url) =>
+    `${window.BASE_URL.replace(/\/$/, "")}/${url.replace(/^\//, "")}`;
+
 document.addEventListener("DOMContentLoaded", () => {
 
     let isSubmitting = false;
@@ -37,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             try {
                 const response = await fetch(
-                    `/api/salas?biblioteca=${biblioteca.value}`
+                    api(`/api/salas?biblioteca=${biblioteca.value}`)
                 );
 
                 const data = await response.json();
@@ -76,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             try {
                 const response = await fetch(
-                    `/api/mesas?sala=${sala.value}`
+                    api(`/api/mesas?sala=${sala.value}`)
                 );
 
                 const data = await response.json();
@@ -122,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             try {
 
-                const res = await fetch("/guardar-reserva", {
+                const res = await fetch(api("/guardar-reserva"), {
                     method: "POST",
                     body: formData
                 });
@@ -145,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     setTimeout(() => {
                         window.location.href =
-                            "/mis-reservas";
+                            api("/mis-reservas");
                     }, 600);
 
                 } else {
@@ -194,7 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             try {
 
-                const res = await fetch("/actualizar-reserva", {
+                const res = await fetch(api("/actualizar-reserva"), {
                     method: "POST",
                     body: formData
                 });
@@ -217,7 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     setTimeout(() => {
                         window.location.href =
-                            "/mis-reservas";
+                            api("/mis-reservas");
                     }, 600);
 
                 } else {
@@ -271,7 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     formData.append("id", id);
                     formData.append("csrf_token", csrf);
 
-                    const res = await fetch("/eliminar-reserva", {
+                    const res = await fetch(api("/eliminar-reserva"), {
                         method: "POST",
                         body: formData
                     });
@@ -350,7 +353,7 @@ async function cargarSalas(idBiblioteca) {
 
     try {
 
-        const res = await fetch(`/api/salas?biblioteca=${idBiblioteca}`);
+        const res = await fetch(api(`/api/salas?biblioteca=${idBiblioteca}`));
         const data = await res.json();
 
         sala.innerHTML = `<option value="">Seleccionar sala</option>`;
@@ -385,7 +388,7 @@ async function cargarMesas(idSala) {
 
     try {
 
-        const res = await fetch(`/api/mesas?sala=${idSala}`);
+        const res = await fetch(api(`/api/mesas?sala=${idSala}`));
         const data = await res.json();
 
         mesa.innerHTML = `<option value="">Seleccionar mesa</option>`;
@@ -418,7 +421,7 @@ async function refrescarReservas() {
 
     try {
 
-        const res = await fetch("/api/mis-reservas");
+        const res = await fetch(api("/api/mis-reservas"));
         const data = await res.json();
 
         if (!Array.isArray(data) || data.length === 0) {

@@ -10,8 +10,7 @@ class AuthService
 
     public function __construct()
     {
-        $this->usuarioModel =
-            new Usuario();
+        $this->usuarioModel = new Usuario();
     }
 
     // =========================
@@ -21,14 +20,13 @@ class AuthService
     public function login(
         string $email,
         string $password
-    ): bool {
+    ): array|false {
 
         $usuario =
             $this->usuarioModel
                 ->obtenerPorEmail($email);
 
         if (!$usuario) {
-
             return false;
         }
 
@@ -38,22 +36,14 @@ class AuthService
                 $usuario['contrasena']
             )
         ) {
-
             return false;
         }
 
-        $_SESSION['id'] =
-            (int)$usuario['id_usuario'];
-
-        $_SESSION['nombre'] =
-            $usuario['nombre_u'];
-
-        $_SESSION['rol'] =
-            $usuario['rol'];
-
-        $_SESSION['login_success'] = true;
-
-        return true;
+        return [
+            'id' => (int)$usuario['id_usuario'],
+            'nombre' => $usuario['nombre_u'],
+            'rol' => $usuario['rol']
+        ];
     }
 
     // =========================
@@ -71,7 +61,6 @@ class AuthService
                 ->obtenerPorEmail($email);
 
         if ($usuarioExistente) {
-
             return false;
         }
 
@@ -96,9 +85,7 @@ class AuthService
     {
         $_SESSION = [];
 
-        if (
-            ini_get("session.use_cookies")
-        ) {
+        if (ini_get("session.use_cookies")) {
 
             $params =
                 session_get_cookie_params();

@@ -18,6 +18,8 @@ declare(strict_types=1);
 
     <script src="<?= base_url('assets/js/ui-system.js') ?>" defer></script>
 
+    <script>window.BASE_URL = "<?= base_url() ?>";</script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 

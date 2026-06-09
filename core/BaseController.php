@@ -28,7 +28,6 @@ class BaseController
         }
     }
 
-    // ✅ NUEVO: ADMIN CHECK (ESTO ES LO QUE TE FALTABA)
     protected function requireAdmin(): void
     {
         $this->checkSessionTimeout();

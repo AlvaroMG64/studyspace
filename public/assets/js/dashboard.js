@@ -1,3 +1,6 @@
+const api = (url) =>
+    `${window.BASE_URL.replace(/\/$/, "")}/${url.replace(/^\//, "")}`;
+
 document.addEventListener("DOMContentLoaded", () => {
 
     inicializarDashboard();
@@ -115,9 +118,7 @@ async function cargarTree() {
 
     try {
 
-        const res = await fetch(
-            "/api/bibliotecas-tree"
-        );
+        const res = await fetch(api("/api/bibliotecas-tree"));
 
         const data = await res.json();
 
@@ -263,7 +264,7 @@ async function refrescarDashboard() {
 
     try {
 
-        const res = await fetch("/api/stats");
+        const res = await fetch(api("/api/stats"));
         const data = await res.json();
 
         document.getElementById("totalReservas").innerText =

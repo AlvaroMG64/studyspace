@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 require_once "../core/BaseController.php";
-
 require_once "../app/services/SalaService.php";
 
 class SalaController extends BaseController
@@ -12,28 +11,19 @@ class SalaController extends BaseController
 
     public function __construct()
     {
-        $this->requireAuth();
-
-        $this->salaService =
-            new SalaService();
+        $this->salaService = new SalaService();
     }
-
-    // =========================
-    // OBTENER SALAS
-    // =========================
 
     public function obtenerPorBiblioteca(): void
     {
+        $this->requireAuthApi();
+
         $biblioteca =
-            intval(
-                $_GET['biblioteca'] ?? 0
-            );
+            intval($_GET['biblioteca'] ?? 0);
 
         $salas =
             $this->salaService
-                ->obtenerSalas(
-                    $biblioteca
-                );
+                ->obtenerSalas($biblioteca);
 
         $this->json($salas);
     }
