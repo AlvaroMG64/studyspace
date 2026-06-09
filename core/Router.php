@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-class Router {
-
+class Router
+{
     private array $routes = [];
 
     public function get(string $uri, string $action): void
@@ -27,14 +27,33 @@ class Router {
 
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-        $uri = str_replace('/studyspace/public', '', $uri);
+        // =========================
+        // FIX BASE PATH ROBUSTO
+        // =========================
+        $scriptName = $_SERVER['SCRIPT_NAME'];
+        $baseDir = str_replace('\\', '/', dirname($scriptName));
 
-        $uri = $this->format($uri);
+        if ($baseDir !== '/' && $baseDir !== '.') {
+            $uri = str_replace($baseDir, '', $uri);
+        }
+
+        $uri = trim($uri, '/');
 
         $action = $this->routes[$method][$uri] ?? null;
 
         if ($action === null) {
             http_response_code(404);
+
+            if (str_starts_with($uri, 'api/')) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    "success" => false,
+                    "message" => "Endpoint no encontrado",
+                    "route" => $uri
+                ]);
+                exit;
+            }
+
             die("404 - Página no encontrada");
         }
 

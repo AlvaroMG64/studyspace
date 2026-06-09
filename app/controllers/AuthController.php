@@ -15,15 +15,16 @@ class AuthController extends BaseController
         $this->authService = new AuthService();
     }
 
-    // =========================
-    // HOME
-    // =========================
-
     public function home(): void
     {
         $this->requireAuth();
 
-        if (esAdmin()) {
+        if (!isset($_SESSION['rol'])) {
+            header("Location: /login");
+            exit;
+        }
+
+        if ($_SESSION['rol'] === 'admin') {
 
             $reservaModel = new Reserva();
 
@@ -41,18 +42,10 @@ class AuthController extends BaseController
         $this->view("dashboard/usuario");
     }
 
-    // =========================
-    // LOGIN VIEW
-    // =========================
-
     public function login(): void
     {
         $this->view("auth/login");
     }
-
-    // =========================
-    // LOGIN POST
-    // =========================
 
     public function autenticar(): void
     {
@@ -60,37 +53,39 @@ class AuthController extends BaseController
         $password = trim($_POST['password'] ?? '');
 
         if (empty($email) || empty($password)) {
-
             $_SESSION['error'] = "Todos los campos son obligatorios";
-            $this->redirect("/studyspace/public/login");
+            $this->redirect(base_url('login'));
+            exit;
         }
 
-        $ok = $this->authService->login($email, $password);
+        $user = $this->authService->login($email, $password);
 
-        if (!$ok) {
-
+        // 🔥 FIX CLAVE: evitar bool tratado como array
+        if (!is_array($user)) {
             $_SESSION['error'] = "Usuario o contraseña incorrectos";
-            $this->redirect("/studyspace/public/login");
+            $this->redirect(base_url('login'));
+            exit;
         }
 
-        // 🔥 UX FLAG (IMPORTANTE)
+        // 🔐 Seguridad sesión
+        session_regenerate_id(true);
+
+        $_SESSION['id'] = $user['id'];
+        $_SESSION['rol'] = $user['rol'];
+
+        // timeout system
+        $_SESSION['last_activity'] = time();
+
         $_SESSION['login_success'] = true;
 
-        $this->redirect("/studyspace/public/");
+        $this->redirect(base_url(''));
+        exit;
     }
-
-    // =========================
-    // REGISTRO VIEW
-    // =========================
 
     public function registro(): void
     {
         $this->view("auth/registro");
     }
-
-    // =========================
-    // REGISTRO POST
-    // =========================
 
     public function guardarRegistro(): void
     {
@@ -99,36 +94,46 @@ class AuthController extends BaseController
         $password = trim($_POST['password'] ?? '');
 
         if (empty($nombre) || empty($email) || empty($password)) {
-
             $_SESSION['error'] = "Todos los campos son obligatorios";
-            $this->redirect("/studyspace/public/registro");
+            $this->redirect(base_url('registro'));
+            exit;
         }
 
         $ok = $this->authService->registrar($nombre, $email, $password);
 
         if (!$ok) {
-
             $_SESSION['error'] = "El email ya existe";
-            $this->redirect("/studyspace/public/registro");
+            $this->redirect(base_url('registro'));
+            exit;
         }
 
-        // 🔥 UX FLAG
         $_SESSION['success'] = "Cuenta creada correctamente";
 
-        $this->redirect("/studyspace/public/login");
+        $this->redirect(base_url('login'));
+        exit;
     }
-
-    // =========================
-    // LOGOUT
-    // =========================
 
     public function logout(): void
     {
-        $this->authService->logout();
+        // limpiar sesión completamente
+        $_SESSION = [];
 
-        // 🔥 UX FLAG
-        $_SESSION['logout_success'] = true;
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
 
-        $this->redirect("/studyspace/public/login");
+        session_destroy();
+
+        $this->redirect(base_url('login'));
+        exit;
     }
 }

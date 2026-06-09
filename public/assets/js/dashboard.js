@@ -41,60 +41,6 @@ function inicializarDashboard() {
 }
 
 // =========================
-// ELIMINAR
-// =========================
-
-function inicializarEliminar() {
-
-    document.querySelectorAll(".btnEliminar").forEach(btn => {
-
-        btn.onclick = (e) => {
-
-            e.preventDefault();
-            e.stopPropagation(); 
-
-            showConfirm(
-                "¿Seguro que deseas eliminar esta reserva?",
-                async () => {
-
-                    const form = new FormData();
-                    form.append("id", btn.dataset.id);
-
-                    try {
-
-                        const res = await fetch(
-                            "/studyspace/public/eliminar-reserva",
-                            {
-                                method: "POST",
-                                body: form
-                            }
-                        );
-
-                        const data = await res.json();
-
-                        if (data.success) {
-
-                            document
-                                .getElementById(`fila-${btn.dataset.id}`)
-                                ?.remove();
-
-                            showToast("success", "Reserva eliminada");
-
-                        } else {
-
-                            showToast("error", data.message);
-                        }
-
-                    } catch (e) {
-                        showToast("error", "Error de conexión");
-                    }
-                }
-            );
-        };
-    });
-}
-
-// =========================
 // FILTROS
 // =========================
 
@@ -170,7 +116,7 @@ async function cargarTree() {
     try {
 
         const res = await fetch(
-            "/studyspace/public/api/bibliotecas-tree"
+            "/api/bibliotecas-tree"
         );
 
         const data = await res.json();
@@ -274,6 +220,8 @@ async function cargarTree() {
 // GRÁFICA
 // =========================
 
+let chartInstance = null;
+
 function generarGrafica() {
 
     const filas =
@@ -282,7 +230,6 @@ function generarGrafica() {
     const map = {};
 
     filas.forEach(f => {
-
         map[f.dataset.fecha] =
             (map[f.dataset.fecha] || 0) + 1;
     });
@@ -292,7 +239,12 @@ function generarGrafica() {
 
     if (!ctx) return;
 
-    new Chart(ctx, {
+    // FIX: destruir anterior gráfico
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    chartInstance = new Chart(ctx, {
         type: "bar",
 
         data: {
@@ -311,7 +263,7 @@ async function refrescarDashboard() {
 
     try {
 
-        const res = await fetch("/studyspace/public/api/dashboard");
+        const res = await fetch("/api/stats");
         const data = await res.json();
 
         document.getElementById("totalReservas").innerText =
@@ -358,3 +310,8 @@ function recalcularDashboard() {
 
     generarGrafica();
 }
+
+document.addEventListener("reservas:updated", () => {
+    refrescarDashboard();
+    recalcularDashboard();
+});

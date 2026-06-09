@@ -46,7 +46,7 @@ class Biblioteca extends Model
         while ($row = $result->fetch_assoc()) {
 
             $bibId = $row['id_biblioteca'];
-            $salaId = $row['id_sala'];
+            $salaId = $row['id_sala'] ?? null;
 
             if (!isset($tree[$bibId])) {
                 $tree[$bibId] = [
@@ -56,7 +56,7 @@ class Biblioteca extends Model
                 ];
             }
 
-            if ($salaId && !isset($tree[$bibId]['salas'][$salaId])) {
+            if ($salaId !== null && !isset($tree[$bibId]['salas'][$salaId])) {
                 $tree[$bibId]['salas'][$salaId] = [
                     "id" => $salaId,
                     "nombre" => $row['nombre_s'],
@@ -64,7 +64,7 @@ class Biblioteca extends Model
                 ];
             }
 
-            if (!empty($row['id_mesa'])) {
+            if (!empty($row['id_mesa']) && $salaId !== null) {
                 $tree[$bibId]['salas'][$salaId]['mesas'][] = [
                     "id" => $row['id_mesa'],
                     "numero" => $row['numero']

@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             try {
                 const response = await fetch(
-                    `/studyspace/public/api/salas?biblioteca=${biblioteca.value}`
+                    `/api/salas?biblioteca=${biblioteca.value}`
                 );
 
                 const data = await response.json();
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             try {
                 const response = await fetch(
-                    `/studyspace/public/api/mesas?sala=${sala.value}`
+                    `/api/mesas?sala=${sala.value}`
                 );
 
                 const data = await response.json();
@@ -122,16 +122,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             try {
 
-                const res = await fetch("/studyspace/public/guardar-reserva", {
+                const res = await fetch("/guardar-reserva", {
                     method: "POST",
                     body: formData
                 });
 
-                const texto = await res.text();
-
-                console.log(texto);
-
-                const data = JSON.parse(texto);
+                const data = await res.json();
 
                 if (!data || typeof data.success === "undefined") {
                     showToast("error", "Respuesta inválida del servidor");
@@ -145,17 +141,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         data.message || "Reserva creada correctamente"
                     );
 
-                    if (typeof refrescarReservas === "function") {
-                        await refrescarReservas();
-                    }
-
-                    if (typeof refrescarDashboard === "function") {
-                        await refrescarDashboard();
-                    }
+                    document.dispatchEvent(new Event("reservas:updated"));
 
                     setTimeout(() => {
                         window.location.href =
-                            "/studyspace/public/mis-reservas";
+                            "/mis-reservas";
                     }, 600);
 
                 } else {
@@ -204,16 +194,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             try {
 
-                const res = await fetch("/studyspace/public/actualizar-reserva", {
+                const res = await fetch("/actualizar-reserva", {
                     method: "POST",
                     body: formData
                 });
 
-                const texto = await res.text();
-
-                console.log(texto);
-
-                const data = JSON.parse(texto);
+                const data = await res.json();
 
                 if (!data || typeof data.success === "undefined") {
                     showToast("error", "Respuesta inválida del servidor");
@@ -227,17 +213,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         data.message || "Cambios guardados correctamente"
                     );
 
-                    if (typeof refrescarReservas === "function") {
-                        await refrescarReservas();
-                    }
-
-                    if (typeof refrescarDashboard === "function") {
-                        await refrescarDashboard();
-                    }
+                    document.dispatchEvent(new Event("reservas:updated"));
 
                     setTimeout(() => {
                         window.location.href =
-                            "/studyspace/public/mis-reservas";
+                            "/mis-reservas";
                     }, 600);
 
                 } else {
@@ -274,62 +254,40 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!btn) return;
 
         showConfirm(
-            "¿Seguro que desea eliminar esta reserva?",
+            "¿Seguro que deseas eliminar esta reserva?",
             async () => {
 
                 const id = btn.dataset.id;
+                const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
+
+                if (!csrf) {
+                    showToast("error", "Error de seguridad: CSRF no disponible");
+                    return;
+                }
 
                 try {
 
                     const formData = new FormData();
                     formData.append("id", id);
+                    formData.append("csrf_token", csrf);
 
-                    const res = await fetch(
-                        "/studyspace/public/eliminar-reserva",
-                        {
-                            method: "POST",
-                            body: formData
-                        }
-                    );
+                    const res = await fetch("/eliminar-reserva", {
+                        method: "POST",
+                        body: formData
+                    });
 
                     const data = await res.json();
 
-                    if (data.success !== true) {
+                    if (!data.success) {
                         showToast("error", data.message || "Error al eliminar");
                         return;
                     }
 
-                    // ======================
-                    // 1. ELIMINAR FILA
-                    // ======================
-
                     document.getElementById(`fila-${id}`)?.remove();
 
-                    // ======================
-                    // 2. DASHBOARD RELOAD LIMPIO
-                    // ======================
-
-                    if (typeof refrescarDashboard === "function") {
-                        await refrescarDashboard();
-                    }
-
-                    if (typeof inicializarDashboard === "function") {
-                        inicializarDashboard();
-                    }
-
-                    if (typeof generarGrafica === "function") {
-                        generarGrafica();
-                    }
-
-                    // ======================
-                    // 3. MIS RESERVAS (ÚNICA FUENTE DE VERDAD)
-                    // ======================
-
-                    if (typeof refrescarReservas === "function") {
-                        await refrescarReservas();
-                    }
-
                     showToast("success", "Reserva eliminada");
+
+                    document.dispatchEvent(new Event("reservas:updated"));
 
                 } catch (e) {
                     console.error(e);
@@ -392,7 +350,7 @@ async function cargarSalas(idBiblioteca) {
 
     try {
 
-        const res = await fetch(`/studyspace/public/api/salas?biblioteca=${idBiblioteca}`);
+        const res = await fetch(`/api/salas?biblioteca=${idBiblioteca}`);
         const data = await res.json();
 
         sala.innerHTML = `<option value="">Seleccionar sala</option>`;
@@ -427,7 +385,7 @@ async function cargarMesas(idSala) {
 
     try {
 
-        const res = await fetch(`/studyspace/public/api/mesas?sala=${idSala}`);
+        const res = await fetch(`/api/mesas?sala=${idSala}`);
         const data = await res.json();
 
         mesa.innerHTML = `<option value="">Seleccionar mesa</option>`;
@@ -460,7 +418,7 @@ async function refrescarReservas() {
 
     try {
 
-        const res = await fetch("/studyspace/public/api/mis-reservas");
+        const res = await fetch("/api/mis-reservas");
         const data = await res.json();
 
         if (!Array.isArray(data) || data.length === 0) {
@@ -468,7 +426,7 @@ async function refrescarReservas() {
             contenedor.innerHTML = `
                 <div class="text-center p-4">
                     <h3>No tienes reservas</h3>
-                    <p>Todavía no has realizado ninguna reserva.</p>
+                    <p>Todavía no has realizado ninguna reserva</p>
                 </div>
             `;
             return;

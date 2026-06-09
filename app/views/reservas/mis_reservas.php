@@ -12,10 +12,7 @@ require_once "../app/views/layouts/header.php";
     Mis Reservas
 </h2>
 
-<div
-    id="mensajeAjax"
-    class="mb-6"
-></div>
+<div id="mensajeAjax" class="mb-6"></div>
 
 <?php if ($reservas->num_rows > 0) : ?>
 
@@ -33,9 +30,7 @@ require_once "../app/views/layouts/header.php";
                     <div>
 
                         <h3 class="text-2xl font-bold font-display">
-
                             Mesa <?= (int)$r['numero'] ?>
-
                         </h3>
 
                         <p class="text-gray-500">
@@ -61,43 +56,33 @@ require_once "../app/views/layouts/header.php";
                 <div class="space-y-3 text-gray-700">
 
                     <p>
-
-                        <span class="font-semibold">
-                            Biblioteca:
-                        </span>
-
+                        <span class="font-semibold">Biblioteca:</span>
                         <?= htmlspecialchars($r['nombre_b']) ?>
-
                     </p>
 
                     <p>
-
-                        <span class="font-semibold">
-                            Horario:
-                        </span>
+                        <span class="font-semibold">Horario:</span>
 
                         <?= substr($r['hora_inicio'], 0, 5) ?>
-
                         -
-
                         <?= substr($r['hora_fin'], 0, 5) ?>
-
                     </p>
 
                 </div>
 
                 <div class="flex gap-4 mt-8">
 
+                    <!-- ✅ FIX EDITAR -->
                     <a
-                        href="/studyspace/public/editar-reserva?id=<?= (int)$r['id_reserva'] ?>"
+                        href="<?= base_url('editar-reserva') . '?id=' . (int)$r['id_reserva'] ?>"
                         class="
-                        flex-1
-                        text-center
-                        bg-blue-600
-                        text-white
-                        py-3
-                        rounded-2xl
-                        font-medium
+                            flex-1
+                            text-center
+                            bg-blue-600
+                            text-white
+                            py-3
+                            rounded-2xl
+                            font-medium
                         "
                     >
                         Editar
@@ -105,13 +90,13 @@ require_once "../app/views/layouts/header.php";
 
                     <button
                         class="
-                        flex-1
-                        bg-red-500
-                        text-white
-                        py-3
-                        rounded-2xl
-                        font-medium
-                        btnEliminar
+                            flex-1
+                            bg-red-500
+                            text-white
+                            py-3
+                            rounded-2xl
+                            font-medium
+                            btnEliminar
                         "
                         data-id="<?= (int)$r['id_reserva'] ?>"
                     >
@@ -135,14 +120,15 @@ require_once "../app/views/layouts/header.php";
         </h3>
 
         <p class="text-gray-600">
-            Todavía no has realizado ninguna reserva.
+            Todavía no has realizado ninguna reserva
         </p>
 
     </div>
 
 <?php endif; ?>
 
-<script src="/studyspace/resources/js/reservas.js"></script>
+<!-- JS -->
+<script src="<?= base_url('assets/js/reservas.js') ?>"></script>
 
 <?php
 

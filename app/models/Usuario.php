@@ -47,7 +47,7 @@ class Usuario extends Model
     public function crear(
         string $nombre,
         string $email,
-        string $password
+        string $passwordHash
     ): bool {
 
         $sql = "
@@ -63,17 +63,11 @@ class Usuario extends Model
         $stmt =
             $this->db->prepare($sql);
 
-        $hash =
-            password_hash(
-                $password,
-                PASSWORD_DEFAULT
-            );
-
         $stmt->bind_param(
             "sss",
             $nombre,
             $email,
-            $hash
+            $passwordHash
         );
 
         return $stmt->execute();

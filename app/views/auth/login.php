@@ -4,9 +4,7 @@
 <html lang="es">
 
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>StudySpace - Login</title>
@@ -14,102 +12,86 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
+<link rel="icon" type="image/png" href="<?= base_url('assets/img/logo.png?v=1') ?>">
+
 <style>
+body { font-family: 'Roboto', sans-serif; }
+h1, h2 { font-family: 'Poppins', sans-serif; }
 
-    body {
-        font-family: 'Roboto', sans-serif;
-    }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-    h1, h2, .font-display {
-        font-family: 'Poppins', sans-serif;
-    }
-
+.animate-in {
+    animation: fadeIn 0.6s ease-out;
+}
 </style>
-
 </head>
 
-<body class="bg-gradient-to-br from-blue-100 to-blue-200 min-h-screen flex items-center justify-center p-6">
+<body class="min-h-screen flex">
 
-<div class="bg-white w-full max-w-lg p-12 rounded-3xl shadow-2xl">
+<div class="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-800 text-white p-20 flex-col justify-center">
 
-    <!-- HEADER -->
-    <div class="text-center mb-10">
+    <img src="<?= base_url('assets/img/logo.png') ?>" class="w-64 h-64 mb-8 drop-shadow-xl">
 
-        <h1 class="text-5xl font-bold text-blue-700 mb-3 font-display">
-            StudySpace
-        </h1>
+    <h1 class="text-5xl font-bold mb-4">StudySpace</h1>
 
-        <p class="text-gray-600 text-lg leading-relaxed">
-            Plataforma de gestión de reservas
-            de bibliotecas y salas de estudio
+    <p class="text-white/80 text-xl leading-relaxed">
+        Sistema de reservas para bibliotecas y salas de estudio
+    </p>
+
+</div>
+
+<div class="w-full lg:w-1/2 flex items-center justify-center p-10
+bg-[radial-gradient(circle_at_20%_20%,#dbeafe,transparent_40%),linear-gradient(to_bottom,#f8fafc,#eef2ff)]">
+
+    <div class="animate-in w-full max-w-md">
+
+        <div class="text-center mb-10">
+
+            <img src="<?= base_url('assets/img/logo.png') ?>"
+                 class="w-36 h-36 mx-auto mb-6 drop-shadow-xl">
+
+            <h2 class="text-4xl font-bold text-slate-900">Iniciar sesión</h2>
+            <p class="text-slate-500 text-base mt-2">Accede a tu cuenta</p>
+
+        </div>
+
+        <?php mensaje(); ?>
+
+        <form method="POST" action="<?= base_url('login') ?>" class="space-y-5">
+
+            <input type="email" name="email" required placeholder="Correo electrónico"
+                class="w-full p-4 text-lg rounded-xl border border-slate-200 bg-white/70
+                focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+
+            <input type="password" name="password" required placeholder="Contraseña"
+                class="w-full p-4 text-lg rounded-xl border border-slate-200 bg-white/70
+                focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+
+            <button class="w-full py-4 rounded-xl
+                bg-gradient-to-r from-blue-600 to-indigo-700
+                text-white font-semibold text-lg
+                shadow-lg hover:scale-[1.02] active:scale-[0.98]
+                transition">
+                Entrar
+            </button>
+
+        </form>
+
+        <p class="mt-6 text-center text-slate-500 text-sm">
+            ¿No tienes cuenta?
+            <a href="<?= base_url('registro') ?>" class="text-blue-600 font-semibold hover:underline">
+                Regístrate
+            </a>
         </p>
 
     </div>
-
-    <!-- TITLE -->
-    <h2 class="text-3xl font-bold mb-8 text-center font-display">
-        Iniciar sesión
-    </h2>
-
-    <!-- MENSAJES -->
-    <?php mensaje(); ?>
-
-    <!-- FORM -->
-    <form method="POST" action="/studyspace/public/login" class="space-y-5">
-
-        <input
-            type="email"
-            name="email"
-            placeholder="Correo electrónico"
-            required
-            class="w-full p-4 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-        >
-
-        <input
-            type="password"
-            name="password"
-            placeholder="Contraseña"
-            required
-            class="w-full p-4 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-        >
-
-        <button
-            class="
-                w-full
-                bg-gradient-to-r from-blue-600 to-blue-800
-                text-white
-                py-4
-                rounded-2xl
-                font-semibold
-                text-lg
-                shadow-lg
-                hover:opacity-95
-                transition
-            "
-        >
-            Entrar
-        </button>
-
-    </form>
-
-    <!-- REGISTER -->
-    <p class="mt-8 text-center text-gray-600">
-
-        ¿No tienes cuenta?
-
-        <a
-            href="/studyspace/public/registro"
-            class="text-blue-600 font-semibold hover:underline"
-        >
-            Regístrate
-        </a>
-
-    </p>
 
 </div>
 

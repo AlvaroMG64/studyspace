@@ -13,18 +13,14 @@ class ReservaController extends BaseController
 
     public function __construct()
     {
-        $this->requireAuth();
-
         $this->service = new ReservaService();
         $this->bibliotecaModel = new Biblioteca();
     }
 
-    // =========================
-    // MIS RESERVAS
-    // =========================
-
     public function misReservas(): void
     {
+        $this->requireAuth();
+
         $reservas = $this->service->obtenerReservasUsuario($_SESSION['id']);
 
         $this->view("reservas/mis_reservas", [
@@ -32,12 +28,10 @@ class ReservaController extends BaseController
         ]);
     }
 
-    // =========================
-    // FORM CREAR
-    // =========================
-
     public function crear(): void
     {
+        $this->requireAuth();
+
         $bibliotecas = $this->bibliotecaModel->obtenerTodas();
 
         $this->view("reservas/crear", [
@@ -45,24 +39,30 @@ class ReservaController extends BaseController
         ]);
     }
 
-    // =========================
-    // GUARDAR
-    // =========================
-
     public function guardar(): void
     {
+        if (
+            !isset($_POST['csrf_token']) ||
+            !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])
+        ) {
+            http_response_code(403);
+            exit('CSRF inválido');
+        }
+
+        $this->requireAuthApi();
+
         $fecha = trim($_POST['fecha'] ?? '');
         $inicio = trim($_POST['inicio'] ?? '');
         $fin = trim($_POST['fin'] ?? '');
         $mesa = (int)($_POST['mesa'] ?? 0);
-        $usuario = $_SESSION['id'];
+        $usuario = (int)$_SESSION['id'];
 
         if (!$mesa) {
+
             $this->json([
                 "success" => false,
                 "message" => "Debes seleccionar una mesa"
             ]);
-            return;
         }
 
         $resultado = $this->service->crearReserva(
@@ -76,12 +76,10 @@ class ReservaController extends BaseController
         $this->json($resultado);
     }
 
-    // =========================
-    // FORM EDITAR (FIX IMPORTANTE)
-    // =========================
-
     public function editar(): void
     {
+        $this->requireAuth();
+
         $id = (int)($_GET['id'] ?? 0);
 
         $reserva = $this->service->obtenerReservaSegura(
@@ -91,6 +89,9 @@ class ReservaController extends BaseController
         );
 
         if (!$reserva) {
+
+            http_response_code(403);
+
             die("No autorizado o reserva no encontrada");
         }
 
@@ -102,12 +103,18 @@ class ReservaController extends BaseController
         ]);
     }
 
-    // =========================
-    // ACTUALIZAR
-    // =========================
-
     public function actualizar(): void
     {
+        if (
+            !isset($_POST['csrf_token']) ||
+            !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])
+        ) {
+            http_response_code(403);
+            exit('CSRF inválido');
+        }
+
+        $this->requireAuthApi();
+
         $id = (int)($_POST['id'] ?? 0);
         $fecha = trim($_POST['fecha'] ?? '');
         $inicio = trim($_POST['inicio'] ?? '');
@@ -127,12 +134,18 @@ class ReservaController extends BaseController
         $this->json($resultado);
     }
 
-    // =========================
-    // ELIMINAR
-    // =========================
-
     public function eliminar(): void
     {
+        if (
+            !isset($_POST['csrf_token']) ||
+            !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])
+        ) {
+            http_response_code(403);
+            exit('CSRF inválido');
+        }
+        
+        $this->requireAuthApi();
+
         $id = (int)($_POST['id'] ?? 0);
 
         $resultado = $this->service->eliminarReserva(
@@ -142,5 +155,27 @@ class ReservaController extends BaseController
         );
 
         $this->json($resultado);
+    }
+
+    /**
+     * API JSON
+     */
+    public function misReservasApi(): void
+    {
+        $this->requireAuthApi();
+
+        $reservas = $this->service->obtenerReservasUsuario($_SESSION['id']);
+
+        $data = [];
+
+        while ($r = $reservas->fetch_assoc()) {
+
+            $data[] = [
+                "id" => (int)$r["id_reserva"],
+                "nombre" => $r["nombre_s"] . " - Mesa " . $r["numero"],
+            ];
+        }
+
+        $this->json($data);
     }
 }

@@ -2,43 +2,17 @@
 
 declare(strict_types=1);
 
-// =========================
-// DASHBOARD STATS
-// =========================
+// DASHBOARD
+$router->get("api/stats", "ApiController@stats");
 
-$router->get(
-    "/api/stats",
-    "ApiController@stats"
-);
+// SALAS
+$router->get("api/salas", "SalaController@obtenerPorBiblioteca");
 
-// =========================
-// BIBLIOTECAS → SALAS
-// =========================
+// MESAS
+$router->get("api/mesas", "MesaController@obtenerPorSala");
 
-$router->get(
-    "/api/salas",
-    "SalaController@obtenerPorBiblioteca"
-);
+// TREE
+$router->get("api/bibliotecas-tree", "ApiController@bibliotecasTree");
 
-// =========================
-// SALAS → MESAS
-// =========================
-
-$router->get(
-    "/api/mesas",
-    "MesaController@obtenerPorSala"
-);
-
-// =========================
-// ÁRBOL VISUAL STUDYSPACE
-// =========================
-
-$router->get(
-    "/api/bibliotecas-tree",
-    "ApiController@bibliotecasTree"
-);
-
-$router->get(
-    "/api/dashboard",
-    "ApiController@stats"
-);
+// MIS RESERVAS API
+$router->get("api/mis-reservas", "ReservaController@misReservasApi");

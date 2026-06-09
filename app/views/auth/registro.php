@@ -1,137 +1,101 @@
-<?php
-
-declare(strict_types=1);
-
-require_once "../core/helpers.php"; ?>
+<?php require_once "../core/helpers.php"; ?>
 
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>StudySpace - Registro</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
-<link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-<link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Roboto:wght@300;400;500;700&display=swap"
-    rel="stylesheet"
->
+<link rel="icon" type="image/png" href="<?= base_url('assets/img/logo.png?v=1') ?>">
 
 <style>
+body { font-family: 'Roboto', sans-serif; }
+h1, h2 { font-family: 'Poppins', sans-serif; }
 
-    body {
-        font-family: 'Roboto', sans-serif;
-    }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-    h1,
-    h2,
-    .font-display {
-        font-family: 'Poppins', sans-serif;
-    }
-
+.animate-in {
+    animation: fadeIn 0.6s ease-out;
+}
 </style>
-
 </head>
 
-<body class="bg-gradient-to-br from-green-100 to-emerald-200 min-h-screen flex items-center justify-center p-6">
+<body class="min-h-screen flex">
 
-<div class="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md">
+<div class="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-800 text-white p-20 flex-col justify-center">
 
-    <div class="text-center mb-8">
+    <img src="<?= base_url('assets/img/logo.png') ?>" class="w-64 h-64 mb-8 drop-shadow-xl">
 
-        <h1 class="text-5xl font-bold text-green-700 mb-3 font-display">
-            StudySpace
-        </h1>
+    <h1 class="text-5xl font-bold mb-4">StudySpace</h1>
 
-        <p class="text-gray-600 text-lg">
-            Crea tu cuenta y empieza a gestionar
-            tus reservas de estudio
+    <p class="text-white/80 text-xl leading-relaxed">
+        Crea tu cuenta y empieza a gestionar tus reservas
+    </p>
+
+</div>
+
+<div class="w-full lg:w-1/2 flex items-center justify-center p-10
+bg-[radial-gradient(circle_at_20%_20%,#dbeafe,transparent_40%),linear-gradient(to_bottom,#f8fafc,#eef2ff)]">
+
+    <div class="animate-in w-full max-w-md">
+
+        <div class="text-center mb-10">
+
+            <img src="<?= base_url('assets/img/logo.png') ?>"
+                 class="w-36 h-36 mx-auto mb-6 drop-shadow-xl">
+
+            <h2 class="text-4xl font-bold text-slate-900">Registro</h2>
+            <p class="text-slate-500 text-base mt-2">Crea tu cuenta</p>
+
+        </div>
+
+        <?php mensaje(); ?>
+
+        <form method="POST" action="<?= base_url('registro') ?>" class="space-y-5">
+
+            <input type="text" name="nombre" required placeholder="Nombre completo"
+                class="w-full p-4 text-lg rounded-xl border border-slate-200 bg-white/70
+                focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+
+            <input type="email" name="email" required placeholder="Correo electrónico"
+                class="w-full p-4 text-lg rounded-xl border border-slate-200 bg-white/70
+                focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+
+            <input type="password" name="password" required placeholder="Contraseña"
+                class="w-full p-4 text-lg rounded-xl border border-slate-200 bg-white/70
+                focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+
+            <button class="w-full py-4 rounded-xl
+                bg-gradient-to-r from-blue-600 to-indigo-700
+                text-white font-semibold text-lg
+                shadow-lg hover:scale-[1.02] active:scale-[0.98]
+                transition">
+                Crear cuenta
+            </button>
+
+        </form>
+
+        <p class="mt-6 text-center text-slate-500 text-sm">
+            ¿Ya tienes cuenta?
+            <a href="<?= base_url('login') ?>" class="text-blue-600 font-semibold hover:underline">
+                Inicia sesión
+            </a>
         </p>
 
     </div>
-
-    <h2 class="text-3xl font-bold mb-6 text-center font-display">
-        Registro
-    </h2>
-
-    <?php mensaje(); ?>
-
-    <form method="POST" action="/studyspace/public/registro">
-
-        <input
-            type="text"
-            name="nombre"
-            placeholder="Nombre completo"
-            required
-            class="w-full p-4 border rounded-2xl mb-4"
-        >
-
-        <input
-            type="email"
-            name="email"
-            placeholder="Correo electrónico"
-            required
-            class="w-full p-4 border rounded-2xl mb-4"
-        >
-
-        <input
-            type="password"
-            name="password"
-            placeholder="Contraseña"
-            required
-            class="w-full p-4 border rounded-2xl mb-6"
-        >
-
-        <button
-            class="
-            w-full
-            bg-gradient-to-r
-            from-green-600
-            to-emerald-700
-            text-white
-            py-4
-            rounded-2xl
-            font-semibold
-            text-lg
-            shadow-lg
-            "
-        >
-            Crear cuenta
-        </button>
-
-    </form>
-
-    <p class="mt-6 text-center text-gray-600">
-
-        ¿Ya tienes cuenta?
-
-        <a
-            href="/studyspace/public/login"
-            class="text-green-700 font-semibold"
-        >
-            Inicia sesión
-        </a>
-
-    </p>
 
 </div>
 

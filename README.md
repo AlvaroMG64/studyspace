@@ -1,5 +1,9 @@
 # 📚 StudySpace - Sistema de Gestión de Reservas de Estudio
 
+<p align="center">
+  <img src="public/assets/img/logo.png" width="140" alt="StudySpace Logo">
+</p>
+
 StudySpace es una aplicación web desarrollada como Proyecto Final del Ciclo Formativo de Grado Superior en Desarrollo de Aplicaciones Web (DAW). Su objetivo es digitalizar y gestionar el sistema de reservas de espacios de estudio dentro de bibliotecas, permitiendo a los usuarios reservar mesas de forma sencilla y a los administradores gestionar la disponibilidad y estadísticas en tiempo real.
 
 ---
@@ -31,18 +35,19 @@ StudySpace es una aplicación web desarrollada como Proyecto Final del Ciclo For
 
 ## 🧠 Arquitectura del proyecto
 
-El proyecto está construido sin frameworks backend completos (como Laravel o Symfony), utilizando una arquitectura MVC ligera propia.
+El proyecto está construido con PHP puro utilizando una arquitectura MVC propia, sin frameworks completos, con el objetivo de entender el flujo completo de una aplicación web desde cero.
 
 ---
 
 ## 📁 Estructura del proyecto
 ```
+/studyspace
 │   .gitignore
 │   LICENSE
 │   README.md
 │
-├───app
-│   ├───controllers
+├───/app
+│   ├───/controllers
 │   │       AdminController.php
 │   │       ApiController.php
 │   │       AuthController.php
@@ -50,11 +55,11 @@ El proyecto está construido sin frameworks backend completos (como Laravel o Sy
 │   │       ReservaController.php
 │   │       SalaController.php
 │   │
-│   ├───middleware
+│   ├───/middleware
 │   │       AdminMiddleware.php
 │   │       AuthMiddleware.php
 │   │
-│   ├───models
+│   ├───/models
 │   │       Biblioteca.php
 │   │       Estadistica.php
 │   │       Mesa.php
@@ -62,74 +67,78 @@ El proyecto está construido sin frameworks backend completos (como Laravel o Sy
 │   │       Sala.php
 │   │       Usuario.php
 │   │
-│   ├───services
+│   ├───/services
 │   │       AuthService.php
 │   │       DashboardService.php
 │   │       MesaService.php
 │   │       ReservaService.php
 │   │       SalaService.php
 │   │
-│   └───views
-│       ├───auth
+│   └───/views
+│       ├───/auth
 │       │       login.php
 │       │       registro.php
 │       │
-│       ├───dashboard
+│       ├───/dashboard
 │       │       admin.php
 │       │       usuario.php
 │       │
-│       ├───layouts
+│       ├───/layouts
 │       │       footer.php
 │       │       header.php
 │       │
-│       └───reservas
+│       └───/reservas
 │               crear.php
 │               editar.php
 │               mis_reservas.php
 │
-├───config
+├───/config
 │       database.php
 │
-├───core
+├───/core
 │       BaseController.php
 │       helpers.php
 │       Model.php
 │       Router.php
 │
-├───database
+├───/database
 │       seed.sql
 │       studyspace.sql
 │
-├───public
-│       .htaccess
-│       index.php
+├───/public
+│   │   .htaccess
+│   │   index.php
+│   │
+│   └───/assets
+│       └───/img
+│               logo.png
 │
-├───resources
-│   └───js
+├───/resources
+│   └───/js
 │           dashboard.js
-│           notifications.js
 │           reservas.js
 │           ui-system.js
 │
-├───routes
+├───/routes
 │       api.php
 │       web.php
 │
-└───storage
+└───/storage
+        .gitkeep
 ```
 
 ---
 
 ## 🛠️ Stack tecnológico
 
-| Tecnología | Descripción |
-|------------|-------------|
-| PHP 8 | Backend y lógica del servidor |
+| Tecnología | Uso |
+|------------|-----|
+| PHP 8 | Backend y arquitectura MVC propia |
 | MySQL (XAMPP) | Base de datos relacional |
-| JavaScript (Vanilla) | Interactividad en el frontend |
+| JavaScript (Vanilla) | Lógica e interacción frontend |
 | Fetch API | Comunicación asíncrona (AJAX) |
-| Tailwind CSS | Diseño y estilos de la interfaz |
-| Apache (XAMPP) | Servidor web local |
+| Tailwind CSS | Estilos de interfaz |
+| Apache (XAMPP) | Servidor local |
 
 ---
 

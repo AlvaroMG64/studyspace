@@ -5,7 +5,6 @@ declare(strict_types=1);
 require_once "../app/views/layouts/header.php";
 
 $bibliotecas = $bibliotecas ?? [];
-
 ?>
 
 <div class="flex justify-center">
@@ -22,7 +21,6 @@ $bibliotecas = $bibliotecas ?? [];
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-                <!-- BIBLIOTECA -->
                 <div>
                     <label class="font-semibold block mb-2">Biblioteca</label>
 
@@ -38,42 +36,33 @@ $bibliotecas = $bibliotecas ?? [];
                     </select>
                 </div>
 
-                <!-- SALA -->
                 <div>
                     <label class="font-semibold block mb-2">Sala</label>
-
                     <select id="sala" disabled class="w-full p-3 border rounded-xl">
                         <option value="">Seleccionar sala</option>
                     </select>
                 </div>
 
-                <!-- MESA -->
                 <div>
                     <label class="font-semibold block mb-2">Mesa</label>
-
                     <select id="mesa" name="mesa" disabled class="w-full p-3 border rounded-xl">
                         <option value="">Seleccionar mesa</option>
                     </select>
                 </div>
 
-                <!-- FECHA -->
                 <div>
                     <label class="font-semibold block mb-2">Fecha</label>
-
-                    <input type="date" name="fecha" min="<?= date('Y-m-d') ?>" class="w-full p-3 border rounded-xl" required>
+                    <input type="date" name="fecha" min="<?= date('Y-m-d') ?>"
+                        class="w-full p-3 border rounded-xl" required>
                 </div>
 
-                <!-- INICIO -->
                 <div>
                     <label class="font-semibold block mb-2">Hora inicio</label>
-
                     <input type="time" name="inicio" class="w-full p-3 border rounded-xl" required>
                 </div>
 
-                <!-- FIN -->
                 <div>
                     <label class="font-semibold block mb-2">Hora fin</label>
-
                     <input type="time" name="fin" class="w-full p-3 border rounded-xl" required>
                 </div>
 
@@ -89,5 +78,7 @@ $bibliotecas = $bibliotecas ?? [];
     </div>
 
 </div>
+
+<script src="<?= base_url('assets/js/reservas.js') ?>"></script>
 
 <?php require_once "../app/views/layouts/footer.php"; ?>

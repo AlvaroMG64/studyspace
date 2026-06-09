@@ -151,7 +151,7 @@ $horaFin =
 
             <div class="flex justify-center gap-4 pt-4">
 
-                <a href="/studyspace/public/mis-reservas"
+                <a href="<?= base_url('mis-reservas') ?>"
                    class="px-8 py-4 rounded-2xl bg-gray-200 hover:bg-gray-300 transition">
                     Cancelar
                 </a>
@@ -167,5 +167,7 @@ $horaFin =
 
     </div>
 </div>
+
+<script src="<?= base_url('assets/js/reservas.js') ?>"></script>
 
 <?php require_once "../app/views/layouts/footer.php"; ?>

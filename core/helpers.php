@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+/**
+ * Muestra mensajes de error y éxito en sesión
+ */
 function mensaje(): void
 {
     if (isset($_SESSION['error'])) {
@@ -45,8 +48,44 @@ function mensaje(): void
     }
 }
 
+/**
+ * Comprueba si el usuario es administrador
+ */
 function esAdmin(): bool
 {
     return isset($_SESSION['rol'])
         && $_SESSION['rol'] === 'admin';
+}
+
+/**
+ * URL base dinámica
+ * Compatible con localhost y Render
+ */
+function base_url(string $path = ''): string
+{
+    $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+
+    $basePath = rtrim(
+        str_replace('\\', '/', dirname($scriptName)),
+        '/'
+    );
+
+    if ($basePath === '/') {
+        $basePath = '';
+    }
+
+    return $basePath . '/' . ltrim($path, '/');
+}
+
+function csrf_token(): string
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+
+    return $_SESSION['csrf_token'];
 }

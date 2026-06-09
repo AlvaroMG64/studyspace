@@ -41,7 +41,7 @@ class Reserva extends Model
             WHERE r.id_usuario = ?
 
             ORDER BY
-                r.fecha_r DESC,
+                r.fecha_r ASC,
                 r.hora_inicio ASC
         ");
 
@@ -91,7 +91,7 @@ class Reserva extends Model
                 ON s.id_biblioteca = b.id_biblioteca
 
             ORDER BY
-                r.fecha_r DESC,
+                r.fecha_r ASC,
                 r.hora_inicio ASC
         ";
 
