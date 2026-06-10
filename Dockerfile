@@ -1,22 +1,19 @@
 FROM php:8.2-apache
 
-# Habilitar rewrite (importante para tu Router MVC)
 RUN a2enmod rewrite
 
-# Extensiones PHP
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# CLAVE: cambiar el DOCUMENT ROOT a /public
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
-    -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' \
-    /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-
-# Copiar proyecto
+# COPIAR PRIMERO
 COPY . /var/www/html/
 
-# Permisos
+# CAMBIAR DOCUMENT ROOT EN VHOST (CLAVE)
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+
+# también en apache config general
+RUN sed -i 's|/var/www/|/var/www/html/public|g' /etc/apache2/apache2.conf
+
+# permisos
 RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 80
