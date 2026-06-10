@@ -321,22 +321,20 @@ function generarGrafica() {
     });
 }
 
+function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.innerText = value ?? 0;
+}
+
 async function refrescarDashboard() {
 
     const res = await fetch(api("/api/stats"));
     const data = await res.json();
 
-    document.getElementById("totalReservas").innerText =
-        data.totalReservas ?? 0;
-
-    document.getElementById("totalUsuarios").innerText =
-        data.totalUsuarios ?? 0;
-
-    document.getElementById("totalMesas").innerText =
-        data.totalMesas ?? 0;
-
-    document.getElementById("reservasHoy").innerText =
-        data.reservasHoy ?? 0;
+    setText("totalReservas", data.totalReservas);
+    setText("totalUsuarios", data.totalUsuarios);
+    setText("totalMesas", data.totalMesas);
+    setText("reservasHoy", data.reservasHoy);
 }
 
 async function refrescarTodoDashboard() {

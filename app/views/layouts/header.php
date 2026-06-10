@@ -44,7 +44,7 @@ declare(strict_types=1);
 
 <?php if (isset($_SESSION['id'])) : ?>
 
-<nav class="bg-blue-700 text-white p-4 shadow-lg">
+<nav class="bg-blue-700 text-white p-4 shadow-lg fixed top-0 left-0 w-full z-50">
 
     <div class="max-w-7xl mx-auto flex justify-between items-center">
 
@@ -53,7 +53,7 @@ declare(strict_types=1);
             <img
                 src="<?= base_url('assets/img/logo.png') ?>"
                 alt="StudySpace Logo"
-                class="w-24 h-24 object-contain"
+                class="w-14 h-14 object-contain"
             />
 
             <h1 class="text-2xl font-bold font-display">
@@ -118,4 +118,4 @@ setTimeout(() => {
 <?php unset($_SESSION['login_success']); ?>
 <?php endif; ?>
 
-<main class="flex-1 max-w-7xl mx-auto p-6 w-full">
+<main class="flex-1 max-w-7xl mx-auto p-6 w-full pt-28 md:pt-32">

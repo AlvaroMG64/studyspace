@@ -14,13 +14,14 @@ StudySpace es una aplicación web desarrollada como Proyecto Final del Ciclo For
 - Registro e inicio de sesión
 - Gestión de reservas personales
 - Visualización de historial de reservas
-- Eliminación y modificación de reservas
+- Eliminación de reservas
+- Sistema de filtros en listado de reservas
 
 ### 🏛️ Sistema de reservas
 - Selección dinámica de biblioteca → sala → mesa
-- Control de disponibilidad
-- Creación de reservas en tiempo real (AJAX + Fetch API)
-- Eliminación instantánea sin recarga completa
+- Control de disponibilidad en tiempo real
+- Creación de reservas mediante AJAX (Fetch API)
+- Eliminación y actualización sin recarga de página
 
 ### 📊 Panel de administración
 - Estadísticas en tiempo real:
@@ -28,20 +29,22 @@ StudySpace es una aplicación web desarrollada como Proyecto Final del Ciclo For
   - Total de usuarios
   - Total de mesas
   - Reservas del día
-- Dashboard dinámico con actualización mediante API
-- Visualización de actividad del sistema
+- Dashboard dinámico con API REST
+- Visualización de estructura completa (Tree: bibliotecas → salas → mesas)
+- Gestión completa de reservas
 
 ---
 
 ## 🧠 Arquitectura del proyecto
 
-El proyecto está construido con PHP puro utilizando una arquitectura MVC propia, sin frameworks completos, con el objetivo de entender el flujo completo de una aplicación web desde cero.
+El proyecto está construido en **PHP puro** con arquitectura MVC propia, sin frameworks, con el objetivo de comprender el flujo completo de una aplicación web desde cero.
 
 ---
 
 ## 📁 Estructura del proyecto
+
 ```
-/studyspace
+studyspace/
 │   .gitignore
 │   LICENSE
 │   README.md
@@ -110,14 +113,21 @@ El proyecto está construido con PHP puro utilizando una arquitectura MVC propia
 │   │   index.php
 │   │
 │   └───/assets
-│       └───/img
-│               logo.png
-│
-├───/resources
-│   └───/js
-│           dashboard.js
-│           reservas.js
-│           ui-system.js
+│       ├───/img
+│       │       CapturaCrearReserva.png
+│       │       CapturaDashboarAdmin.png
+│       │       CapturaDashboardUsuario.png
+│       │       CapturaEditarReserva.png
+│       │       CapturaLogin.png
+│       │       CapturaRegistro.png
+│       │       ListaMisReservas.png
+│       │       ListaTodasReservas.png
+│       │       logo.png
+│       │
+│       └───/js
+│               dashboard.js
+│               reservas.js
+│               ui-system.js
 │
 ├───/routes
 │       api.php
@@ -127,32 +137,35 @@ El proyecto está construido con PHP puro utilizando una arquitectura MVC propia
         .gitkeep
 ```
 
+
 ---
 
 ## 🛠️ Stack tecnológico
 
 | Tecnología | Uso |
 |------------|-----|
-| PHP 8 | Backend y arquitectura MVC propia |
-| MySQL (XAMPP) | Base de datos relacional |
-| JavaScript (Vanilla) | Lógica e interacción frontend |
-| Fetch API | Comunicación asíncrona (AJAX) |
-| Tailwind CSS | Estilos de interfaz |
-| Apache (XAMPP) | Servidor local |
+| PHP 8 | Backend MVC propio |
+| MySQL | Base de datos relacional |
+| JavaScript (Vanilla) | Interacción frontend |
+| Fetch API | Comunicación asíncrona |
+| Tailwind CSS | UI y estilos |
+| Apache (XAMPP) | Entorno local |
 
 ---
 
 ## ⚙️ Configuración de base de datos
 
-El proyecto utiliza MySQL en puerto **3307**.
+El proyecto utiliza MySQL en desarrollo local con XAMPP. La versión de XAMPP utilizada es la 8.2.12.
 
 ```php
-private const HOST = "127.0.0.1";
-private const USER = "root";
-private const PASSWORD = "";
-private const DBNAME = "studyspace";
-private const PORT = 3307;
+DB_HOST=127.0.0.1
+DB_USER=root
+DB_PASS=
+DB_NAME=studyspace
+DB_PORT=3307
 ```
+
+---
 
 ## 📡 API endpoints principales
 
@@ -163,16 +176,14 @@ private const PORT = 3307;
 
 ### Reservas
 - `/mis-reservas`
-- `/guardar-reserva`
+- `/crear-reserva`
 - `/actualizar-reserva`
 - `/eliminar-reserva`
 
 ### API REST
-- `/api/stats` → estadísticas dashboard
-- `/api/salas`
-- `/api/mesas`
-- `/api/mis-reservas`
+- `/api/stats`
 - `/api/bibliotecas-tree`
+- `/api/mis-reservas`
 
 ---
 
@@ -180,59 +191,67 @@ private const PORT = 3307;
 
 El sistema utiliza `fetch()` para actualizar datos sin recargar la página:
 
-- Eliminación instantánea de reservas  
-- Refresco automático del dashboard  
-- Actualización dinámica de listas de reservas  
-
----
-
-## 🧩 Problema técnico conocido (resuelto)
-
-El frontend no se actualiza automáticamente si no se refresca la vista porque:
-
-- Se usa DOM manual + `fetch`
-- Se resuelve con:
-  - `refrescarDashboard()`
-  - `refrescarReservas()`
-  - actualización directa del DOM tras acciones CRUD  
+- Eliminación instantánea de reservas
+- Dashboard en tiempo real
+- Tree dinámico de bibliotecas/salas/mesas
+- Actualización automática de estadísticas
 
 ---
 
 ## 📸 Capturas del sistema
 
-*(Añadir imágenes aquí)*
+### 🔐 Login
+![Login](docs/CapturaLogin.png)
 
-- Login  
-- Dashboard admin  
-- Mis reservas  
-- Crear reserva  
+### 📝 Registro
+![Registro](docs/CapturaRegistro.png)
+
+### 📊 Dashboard Admin
+![Dashboard Admin](docs/CapturaDashboardAdmin.png)
+
+### 👤 Dashboard Usuario
+![Dashboard Usuario](docs/CapturaDashboardUsuario.png)
+
+### 📋 Todas las reservas
+![Todas las reservas](docs/ListaTodasReservas.png)
+
+### 📄 Mis reservas
+![Mis reservas](docs/ListaMisReservas.png)
+
+### ➕ Crear reserva
+![Crear reserva](docs/CapturaCrearReserva.png)
+
+### ✏️ Editar reserva
+![Editar reserva](docs/CapturaEditarReserva.png)
 
 ---
 
 ## 🔧 Instalación y ejecución
 
-1. Clonar el repositorio
 ```bash
 git clone https://github.com/tu-usuario/studyspace.git
 ```
 
-2. Copiar proyecto en:
+### 📂 Pasos de instalación
+
+- Colocar el proyecto en:
+
 ```
-C:/xampp/htdocs/studyspace
+git clone https://github.com/tu-usuario/studyspace.git
 ```
 
-3. Iniciar servicios:
-- Apache
-- MySQL
-
-4. Crear base de datos:
+- Iniciar servicios
+  - Apache
+  - MySQL
+- Crear base de datos:
 ```
 studyspace
 ```
-
-5. Importar estructura SQL (si aplica)
-
-6. Acceder:
+- Importar base de datos:
+```
+database/studyspace.sql
+```
+- Acceder a la aplicación
 ```
 http://localhost/studyspace/public/
 ```
@@ -241,6 +260,6 @@ http://localhost/studyspace/public/
 
 ## 👨‍💻 Autor
 
-Proyecto desarrollado por **Álvaro Mozo Gaspar**  
+Proyecto desarrollado por Álvaro Mozo Gaspar
 Proyecto Final del Ciclo Formativo de Grado Superior en Desarrollo de Aplicaciones Web (DAW)
 IES Playamar
