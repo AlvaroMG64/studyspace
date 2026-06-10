@@ -115,7 +115,7 @@ studyspace/
 │   └───/assets
 │       ├───/img
 │       │       CapturaCrearReserva.png
-│       │       CapturaDashboarAdmin.png
+│       │       CapturaDashboardAdmin.png
 │       │       CapturaDashboardUsuario.png
 │       │       CapturaEditarReserva.png
 │       │       CapturaLogin.png
