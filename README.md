@@ -260,6 +260,6 @@ http://localhost/studyspace/public/
 
 ## 👨‍💻 Autoría
 
-Proyecto desarrollado por Álvaro Mozo Gaspar
-Proyecto Final del Ciclo Formativo de Grado Superior en Desarrollo de Aplicaciones Web (DAW)
+Proyecto desarrollado por Álvaro Mozo Gaspar  <br>
+Proyecto Final del Ciclo Formativo de Grado Superior en Desarrollo de Aplicaciones Web (DAW) <br>
 IES Playamar
