@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once "../app/models/Sala.php";
+require_once BASE_PATH . "/app/models/Sala.php";
 
 class SalaService {
 

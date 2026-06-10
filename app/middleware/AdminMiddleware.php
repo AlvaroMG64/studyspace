@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once "../core/helpers.php";
+require_once BASE_PATH . "/core/helpers.php";
 
 class AdminMiddleware
 {

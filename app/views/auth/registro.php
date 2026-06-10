@@ -1,4 +1,4 @@
-<?php require_once "../core/helpers.php"; ?>
+<?php require_once BASE_PATH . "/core/helpers.php"; ?>
 
 <!DOCTYPE html>
 <html lang="es">

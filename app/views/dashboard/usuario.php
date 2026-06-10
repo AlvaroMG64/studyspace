@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once "../app/views/layouts/header.php";
+require_once BASE_PATH . "/app/views/layouts/header.php";
 ?>
 
 <h1 class="text-5xl font-bold mb-8 mt-8 font-display">
@@ -49,4 +49,4 @@ require_once "../app/views/layouts/header.php";
 
 <script src="<?= base_url('assets/js/dashboard.js') ?>"></script>
 
-<?php require_once "../app/views/layouts/footer.php"; ?>
+<?php require_once BASE_PATH . "/app/views/layouts/footer.php"; ?>

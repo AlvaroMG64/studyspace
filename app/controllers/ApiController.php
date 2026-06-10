@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-require_once "../core/BaseController.php";
-require_once "../app/services/DashboardService.php";
-require_once "../app/models/Biblioteca.php";
+require_once BASE_PATH . "/core/BaseController.php";
+require_once BASE_PATH . "/app/services/DashboardService.php";
+require_once BASE_PATH . "/app/models/Biblioteca.php";
 
 class ApiController extends BaseController
 {

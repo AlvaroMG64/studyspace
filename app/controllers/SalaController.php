@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-require_once "../core/BaseController.php";
-require_once "../app/services/SalaService.php";
+require_once BASE_PATH . "/core/BaseController.php";
+require_once BASE_PATH . "/app/services/SalaService.php";
 
 class SalaController extends BaseController
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once "../app/models/Mesa.php";
+require_once BASE_PATH . "/app/models/Mesa.php";
 
 class MesaService {
 

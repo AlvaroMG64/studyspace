@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once "../app/views/layouts/header.php";
+require_once BASE_PATH . "/app/views/layouts/header.php";
 
 $bibliotecas = $bibliotecas ?? [];
 ?>
@@ -81,4 +81,4 @@ $bibliotecas = $bibliotecas ?? [];
 
 <script src="<?= base_url('assets/js/reservas.js') ?>"></script>
 
-<?php require_once "../app/views/layouts/footer.php"; ?>
+<?php require_once BASE_PATH . "/app/views/layouts/footer.php"; ?>

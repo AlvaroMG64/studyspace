@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-require_once "../core/BaseController.php";
-require_once "../app/services/AuthService.php";
-require_once "../app/models/Reserva.php";
+require_once BASE_PATH . "/core/BaseController.php";
+require_once BASE_PATH . "/app/services/AuthService.php";
+require_once BASE_PATH . "/app/models/Reserva.php";
 
 class AuthController extends BaseController
 {

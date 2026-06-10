@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once "../core/Model.php";
+require_once BASE_PATH . "/core/Model.php";
 
 class Sala extends Model
 {
