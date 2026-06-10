@@ -48,7 +48,7 @@ $horaFin =
 
         <div id="mensajeAjax" class="mb-6"></div>
 
-        <form id="formEditar" class="space-y-8">
+        <form id="formEditar" method="POST" action="<?= base_url('actualizar-reserva') ?>" class="space-y-8">
 
             <input type="hidden" name="id"
                    value="<?= htmlspecialchars((string)$idReserva) ?>">

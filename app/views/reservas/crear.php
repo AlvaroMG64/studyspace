@@ -15,7 +15,7 @@ $bibliotecas = $bibliotecas ?? [];
             Crear Reserva
         </h2>
 
-        <form id="formReserva" class="bg-white p-10 rounded-3xl shadow-xl">
+        <form id="formReserva" method="POST" action="<?= base_url('guardar-reserva') ?>" class="bg-white p-10 rounded-3xl shadow-xl">
 
             <div id="mensajeAjax" class="mb-6"></div>
 

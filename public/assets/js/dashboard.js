@@ -1,9 +1,9 @@
 const api = (url) =>
     `${window.BASE_URL.replace(/\/$/, "")}/${url.replace(/^\//, "")}`;
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
-    inicializarDashboard();
+    await inicializarDashboard();
     inicializarEliminar();
     inicializarFiltros();
     cargarTree();
@@ -14,33 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
 // DASHBOARD
 // =========================
 
-function inicializarDashboard() {
+async function inicializarDashboard() {
 
-    const filas = document.querySelectorAll(".filaReserva");
-
-    const totalReservas = document.getElementById("totalReservas");
-    const totalUsuarios = document.getElementById("totalUsuarios");
-    const totalMesas = document.getElementById("totalMesas");
-    const reservasHoy = document.getElementById("reservasHoy");
-
-    if (!totalReservas || !totalUsuarios || !totalMesas || !reservasHoy) {
-        return;
-    }
-
-    totalReservas.innerText = filas.length;
-
-    totalUsuarios.innerText =
-        new Set([...filas].map(f => f.dataset.usuario)).size;
-
-    totalMesas.innerText =
-        new Set([...filas].map(f => f.dataset.mesa)).size;
-
-    const hoy = new Date().toISOString().split("T")[0];
-
-    reservasHoy.innerText =
-        [...filas].filter(f => f.dataset.fecha === hoy).length;
-
-    generarGrafica();
+    await refrescarTodoDashboard();
 }
 
 // =========================
@@ -101,6 +77,91 @@ function inicializarFiltros() {
 
         aplicar();
     };
+}
+
+// =========================
+// ELIMINAR
+// =========================
+
+function inicializarEliminar() {
+
+    document.addEventListener("click", async (e) => {
+
+        const btn = e.target.closest(".btnEliminar");
+
+        if (!btn) return;
+
+        showConfirm(
+            "¿Seguro que deseas eliminar esta reserva?",
+            async () => {
+
+                const id = btn.dataset.id;
+
+                const csrf =
+                    document.querySelector(
+                        'meta[name="csrf-token"]'
+                    )?.content;
+
+                if (!csrf) {
+                    showToast(
+                        "error",
+                        "CSRF no encontrado"
+                    );
+                    return;
+                }
+
+                try {
+
+                    const formData = new FormData();
+
+                    formData.append("id", id);
+                    formData.append("csrf_token", csrf);
+
+                    const res = await fetch(
+                        api("/eliminar-reserva"),
+                        {
+                            method: "POST",
+                            body: formData
+                        }
+                    );
+
+                    const data = await res.json();
+
+                    if (!data.success) {
+
+                        showToast(
+                            "error",
+                            data.message || "Error al eliminar"
+                        );
+
+                        return;
+                    }
+
+                    document
+                        .getElementById(`fila-${id}`)
+                        ?.remove();
+
+                    showToast(
+                        "success",
+                        "Reserva eliminada"
+                    );
+
+                    document.dispatchEvent(
+                        new Event("reservas:updated")
+                    );
+
+                } catch (e) {
+
+                    console.error(e);
+
+                    showToast(
+                        "error",
+                        "Error de conexión"
+                    );
+                }
+            }
+        );
+    });
 }
 
 // =========================
@@ -262,57 +323,27 @@ function generarGrafica() {
 
 async function refrescarDashboard() {
 
-    try {
+    const res = await fetch(api("/api/stats"));
+    const data = await res.json();
 
-        const res = await fetch(api("/api/stats"));
-        const data = await res.json();
+    document.getElementById("totalReservas").innerText =
+        data.totalReservas ?? 0;
 
-        document.getElementById("totalReservas").innerText =
-            data.totalReservas ?? 0;
+    document.getElementById("totalUsuarios").innerText =
+        data.totalUsuarios ?? 0;
 
-        document.getElementById("totalUsuarios").innerText =
-            data.totalUsuarios ?? 0;
+    document.getElementById("totalMesas").innerText =
+        data.totalMesas ?? 0;
 
-        document.getElementById("totalMesas").innerText =
-            data.totalMesas ?? 0;
-
-        document.getElementById("reservasHoy").innerText =
-            data.reservasHoy ?? 0;
-
-    } catch (e) {
-
-        console.error("Error refrescando dashboard", e);
-    }
+    document.getElementById("reservasHoy").innerText =
+        data.reservasHoy ?? 0;
 }
 
-function recalcularDashboard() {
-
-    const filas = document.querySelectorAll(".filaReserva");
-
-    const totalReservas = document.getElementById("totalReservas");
-    const totalUsuarios = document.getElementById("totalUsuarios");
-    const totalMesas = document.getElementById("totalMesas");
-    const reservasHoy = document.getElementById("reservasHoy");
-
-    if (!totalReservas) return;
-
-    totalReservas.innerText = filas.length;
-
-    totalUsuarios.innerText =
-        new Set([...filas].map(f => f.dataset.usuario)).size;
-
-    totalMesas.innerText =
-        new Set([...filas].map(f => f.dataset.mesa)).size;
-
-    const hoy = new Date().toISOString().split("T")[0];
-
-    reservasHoy.innerText =
-        [...filas].filter(f => f.dataset.fecha === hoy).length;
-
+async function refrescarTodoDashboard() {
+    await refrescarDashboard();
     generarGrafica();
 }
 
 document.addEventListener("reservas:updated", () => {
-    refrescarDashboard();
-    recalcularDashboard();
+    refrescarTodoDashboard();
 });

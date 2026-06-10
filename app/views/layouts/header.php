@@ -18,6 +18,12 @@ declare(strict_types=1);
 
     <script src="<?= base_url('assets/js/ui-system.js') ?>" defer></script>
 
+    <script>
+        console.log("BASE URL PHP:", "<?= base_url() ?>");
+        window.BASE_URL = "<?= base_url() ?>";
+        console.log("BASE URL JS:", window.BASE_URL);
+    </script>
+
     <script>window.BASE_URL = "<?= base_url() ?>";</script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">

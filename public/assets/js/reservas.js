@@ -120,6 +120,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const btn = formReserva.querySelector("button[type='submit']");
             const formData = new FormData(formReserva);
 
+            const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
+            formData.append("csrf_token", csrf);
+
             // solo bloquear botón
             setLoading(btn, true);
 
@@ -191,6 +194,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const btn = formEditar.querySelector("button[type='submit']");
             const formData = new FormData(formEditar);
+
+            const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
+            formData.append("csrf_token", csrf);
 
             // solo bloquear botón
             setLoading(btn, true);
