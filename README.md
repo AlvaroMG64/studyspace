@@ -201,28 +201,28 @@ El sistema utiliza `fetch()` para actualizar datos sin recargar la página:
 ## 📸 Capturas del sistema
 
 ### 🔐 Login
-![Login](docs/CapturaLogin.png)
+![Login](public/assets/img/CapturaLogin.png)
 
 ### 📝 Registro
-![Registro](docs/CapturaRegistro.png)
+![Registro](public/assets/img/CapturaRegistro.png)
 
 ### 📊 Dashboard Admin
-![Dashboard Admin](docs/CapturaDashboardAdmin.png)
+![Dashboard Admin](public/assets/img/CapturaDashboardAdmin.png)
 
 ### 👤 Dashboard Usuario
-![Dashboard Usuario](docs/CapturaDashboardUsuario.png)
+![Dashboard Usuario](public/assets/img/CapturaDashboardUsuario.png)
 
 ### 📋 Todas las reservas
-![Todas las reservas](docs/ListaTodasReservas.png)
+![Todas las reservas](public/assets/img/ListaTodasReservas.png)
 
 ### 📄 Mis reservas
-![Mis reservas](docs/ListaMisReservas.png)
+![Mis reservas](public/assets/img/ListaMisReservas.png)
 
 ### ➕ Crear reserva
-![Crear reserva](docs/CapturaCrearReserva.png)
+![Crear reserva](public/assets/img/CapturaCrearReserva.png)
 
 ### ✏️ Editar reserva
-![Editar reserva](docs/CapturaEditarReserva.png)
+![Editar reserva](public/assets/img/CapturaEditarReserva.png)
 
 ---
 
