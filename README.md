@@ -258,7 +258,7 @@ http://localhost/studyspace/public/
 
 ---
 
-## 👨‍💻 Autor
+## 👨‍💻 Autoría
 
 Proyecto desarrollado por Álvaro Mozo Gaspar
 Proyecto Final del Ciclo Formativo de Grado Superior en Desarrollo de Aplicaciones Web (DAW)
