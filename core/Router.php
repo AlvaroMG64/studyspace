@@ -23,8 +23,6 @@ class Router
 
     public function dispatch(): void
     {
-        var_dump($_SERVER['REQUEST_URI']);
-        die();
     
         $method = $_SERVER['REQUEST_METHOD'];
 
