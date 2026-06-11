@@ -23,6 +23,9 @@ class Router
 
     public function dispatch(): void
     {
+        var_dump($_SERVER['REQUEST_URI']);
+        die();
+    
         $method = $_SERVER['REQUEST_METHOD'];
 
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
