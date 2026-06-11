@@ -27,16 +27,6 @@ class Router
 
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-        // =========================
-        // FIX BASE PATH ROBUSTO
-        // =========================
-        $scriptName = $_SERVER['SCRIPT_NAME'];
-        $baseDir = str_replace('\\', '/', dirname($scriptName));
-
-        if ($baseDir !== '/' && $baseDir !== '.') {
-            $uri = str_replace($baseDir, '', $uri);
-        }
-
         $uri = trim($uri, '/');
 
         $action = $this->routes[$method][$uri] ?? null;
